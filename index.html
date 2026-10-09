@@ -74,7 +74,7 @@ button{cursor:pointer}
 .choosing .tabs{display:none}
 
 main{padding-block:16px calc(96px + env(safe-area-inset-bottom,0px))}
-body.hf main{padding-bottom:calc(250px + env(safe-area-inset-bottom,0px))}
+body.hf main{padding-bottom:calc(310px + env(safe-area-inset-bottom,0px))}
 #view{display:flex;flex-direction:column;gap:14px}
 
 /* bottom tab bar with icons */
@@ -265,7 +265,7 @@ ul.clean li span.zh{display:block}
 .nextrow{display:flex;flex-direction:column;gap:6px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:9;width:max-content;max-width:calc(100% - 32px);background:#0F172A;color:#F8FAFC;padding:10px 16px;border-radius:12px;font-size:14px;font-weight:600;line-height:1.4;box-shadow:var(--shadow-lg);text-align:center}
 .toast.show{animation:rise .22s ease-out}
-body.hf .toast{bottom:calc(244px + env(safe-area-inset-bottom,0px))}
+body.hf .toast{bottom:calc(306px + env(safe-area-inset-bottom,0px))}
 .syncnote{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);margin:0}
 .syncnote i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--muted);margin-top:6px}
 .syncnote.on i{background:var(--good)}
@@ -374,6 +374,14 @@ mark.trap{background:var(--bad-wash);color:var(--bad);font-weight:700;padding:0 
 .notice{border:1px solid color-mix(in srgb,var(--moss) 35%,transparent);background:var(--moss-wash)}
 .notice b{font-size:16px;color:var(--moss-ink)}
 a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+/* v9: big tap-to-answer letters in the hands-free bar */
+.hf-abcd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.hf-abcd button{border:0;background:#F8FAFC;color:#0F172A;border-radius:12px;height:52px;font-size:22px;font-weight:700}
+.hf-abcd button:active{transform:scale(.97)}
+.hf-abcd button[disabled]{opacity:.28}
+.hf-btns.three{grid-template-columns:repeat(3,1fr)}
+.hf-in{animation:none}
+.hfbar:not([hidden]) .hf-in{box-shadow:0 12px 36px rgba(15,23,42,.35)}
 </style>
 </head>
 <body>
@@ -13936,7 +13944,7 @@ return {TOPICS:TOPICS, CARDS:CARDS, MNEMONICS:MNEMONICS, NUMBERS:NUMBERS, PAIRS:
 <script>
 (function(){
 "use strict";
-var VERSION = "v8";
+var VERSION = "v9";
 var SITE = "https://xvartx.github.io/passage/";
 var EX = EXAMS;
 var EXMETA = {
@@ -13950,7 +13958,7 @@ var HUBKEY = "nycards-hub-v1", GOAL = 50, DAY = 864e5;
 var IV = [10*60*1000, DAY, 3*DAY, 7*DAY, 14*DAY, 30*DAY];
 var VIEWS = {cards:1, quiz:1, miss:1, cheat:1, plan:1};
 var HOME=false, TOPICS, CARDS, MNEMONICS, NUMBERS, PAIRS, MC, GLOSS, A, KEY, EXK=null, IDS={}, G={re:null, map:{}}, GI={};
-var HUB = {ex:null, lang:null, streak:{last:"", n:0}, day:{d:"", n:0}, seen:{}, hfListen:true, voice:null};
+var HUB = {ex:null, lang:null, streak:{last:"", n:0}, day:{d:"", n:0}, seen:{}, voice:null};
 function freshS(){
   return {lang:"both", tab:"cards", topic:"all", mode:"order", unm:false, shuf:false,
     known:new Set(), miss:{}, srs:{}, bm:{}, so:{}, cur:null, quiz:null, stats:{day:"", n:0}, upd:0, vocab:{}, hist:{},
@@ -14182,12 +14190,11 @@ function voicePicker(attr){
   return h;
 }
 
-/* ---------- hands-free: hear the question, say A–D, hear why ---------- */
+/* ---------- hands-free: hear the question, answer with one tap (or by voice where the browser allows), hear why ---------- */
 var SR=window.SpeechRecognition||window.webkitSpeechRecognition||null;
-var HF=null, WAKE=null, MICNO=false;
-/* Inside the Claude app (or any page embedded in another), the microphone is usually off limits, so start in listen-only. */
+var HF=null, WAKE=null, MICNO=false, WAIT=12;
+/* Inside the Claude app (or any page embedded in another) the microphone is off limits, so don't even ask. */
 var EMBED=(function(){ try{ return window.self!==window.top; }catch(e){ return true; } })();
-var MIC_NOTE=EMBED ? "在 Claude 网页里用不了麦克风，先用「只听」" : "这里用不了麦克风，先用「只听」";
 var STANDALONE=(window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone===true;
 var VMAP=[
   /^(a|ay|eh|hey|ei|1|one|first|一|第一|第一个|诶|欸|哎|唉)$/,
@@ -14216,27 +14223,33 @@ function hfLock(on){
     if (!on && WAKE){ WAKE.release().catch(function(){}); WAKE=null; }
   }catch(e){}
 }
+/* One button to start. Answering by tapping A–D always works; voice is a quiet bonus when the browser allows it.
+   No answer within a few seconds? It reads the answer and moves on, so it also works as pure listening. */
 function hfStart(){
   if (!canSpeak()){ noSound(); return; }
   if (S.tab!=="cards"){ S.tab="cards"; save(); render(); }
-  HF={phase:"read", listen:!!SR && HUB.hfListen!==false && !EMBED && !MICNO, tries:0, rec:null, heard:"", run:0, first:true, t:null, note:""};
+  HF={phase:"read", voice:false, run:0, rec:null, t:null, tick:null, left:0, ans:null};
   document.body.classList.add("hf");
   hfLock(true);
-  if (HF.listen) hfPrime(null, function(){ if (!HF) return; HF.listen=false; HF.note=MIC_NOTE; renderHF(); });
-  else if (!HUB.seen.hf1){ HUB.seen.hf1=1; saveHub(); toast("「只听」模式：读题 → 停几秒 → 念答案和原因。想用说的，点「说答案」"); }
+  if (SR && !EMBED && !MICNO) hfPrime();
+  if (!HUB.seen.hf2){ HUB.seen.hf2=1; saveHub(); toast("听完题点 A、B、C、D 作答；不答的话，"+WAIT+" 秒后自动念答案"); }
   hfRead();
 }
-/* Ask for the microphone once, inside the tap, so later listening can start on its own. */
-function hfPrime(ok, fail){
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ if (ok) ok(); return; }
+/* Ask for the microphone once, inside the tap. If the answer is no, stay silent and keep tap-to-answer. */
+function hfPrime(){
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
   try{
-    navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){ st.getTracks().forEach(function(t){ t.stop(); }); MICNO=false; if (ok) ok(); },
-      function(){ MICNO=true; if (fail) fail(); });
-  }catch(e){ MICNO=true; if (fail) fail(); }
+    navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){
+      st.getTracks().forEach(function(t){ t.stop(); });
+      if (!HF) return;
+      HF.voice=true; renderHF();
+      if (HF.phase==="answer") hfListen();
+    }, function(){ MICNO=true; });
+  }catch(e){ MICNO=true; }
 }
 function hfHalt(){
   if (!HF) return;
-  HF.run++; clearTimeout(HF.t);
+  HF.run++; clearTimeout(HF.t); clearInterval(HF.tick);
   if (HF.rec){ try{ HF.rec.abort(); }catch(e){} HF.rec=null; }
   hush();
 }
@@ -14252,26 +14265,26 @@ function hfRead(){
   var id=curId();
   if (id===null){ speakNow(line("That's the end of this set.","这一组做完了。"), 0.95, function(){ hfStop(); render(); }); return; }
   if (S.rev){ resetCardUI(); render(); }
-  HF.phase="read"; HF.tries=0; HF.heard=""; renderHF();
-  var parts=cardSpeech(id);
-  if (HF.first && HF.listen) parts=parts.concat(line("Say A, B, C, or D.","请说 A、B、C 或 D。"));
-  HF.first=false;
+  HF.phase="read"; renderHF();
   var run=HF.run;
-  speakNow(parts, 0.92, function(){ if (!HF || run!==HF.run) return; if (HF.listen) hfListen(); else hfThink(); });
+  speakNow(cardSpeech(id), 0.92, function(){ if (HF && run===HF.run) hfWait(); });
 }
-function hfThink(){
+function hfWait(){
   if (!HF) return;
-  HF.phase="think"; renderHF();
+  HF.phase="answer"; HF.left=WAIT; renderHF();
   var run=HF.run;
-  HF.t=setTimeout(function(){ if (HF && run===HF.run) hfReveal(); }, 6000);
+  var tk=HF.tick=setInterval(function(){
+    if (!HF || run!==HF.run){ clearInterval(tk); return; }
+    HF.left--;
+    var el=document.getElementById("hfT"); if (el) el.textContent="请作答 · "+Math.max(0,HF.left)+" 秒";
+    if (HF.left<=0){ clearInterval(HF.tick); hfReveal(); }
+  }, 1000);
+  if (HF.voice) hfListen();
 }
 function hfListen(){
-  if (!HF) return;
-  if (!SR){ HF.listen=false; return hfThink(); }
-  hfHalt();
-  HF.phase="listen"; renderHF();
-  var rec, run=HF.run, got=false;
-  try{ rec=new SR(); }catch(e){ HF.listen=false; return hfThink(); }
+  if (!HF || !SR || !HF.voice || HF.phase!=="answer") return;
+  var rec, run=HF.run;
+  try{ rec=new SR(); }catch(e){ HF.voice=false; renderHF(); return; }
   HF.rec=rec;
   rec.lang=vlang()==="zh" ? "zh-CN" : "en-US";
   rec.interimResults=false; rec.maxAlternatives=5; rec.continuous=false;
@@ -14279,49 +14292,33 @@ function hfListen(){
     if (!HF || run!==HF.run) return;
     var alts=[];
     for (var i=0;i<e.results.length;i++) for (var j=0;j<e.results[i].length;j++) alts.push(e.results[i][j].transcript);
-    got=true; clearTimeout(HF.t); HF.rec=null; hfHeard(alts);
+    var r=parseVoice(alts);
+    if (r===null) return;
+    if (r==="repeat"){ hfRead(); return; }
+    if (r==="skip"){ hfHalt(); hfNext(true); return; }
+    if (r==="stop"){ hfStop(); render(); return; }
+    hfAnswer(r);
   };
   rec.onerror=function(e){
-    if (!HF || run!==HF.run) return;
     var c=e && e.error;
-    if (c==="not-allowed" || c==="service-not-allowed" || c==="audio-capture"){
-      got=true; MICNO=true; HF.listen=false; HF.note=MIC_NOTE; hfThink();
-    } else if (c==="network"){
-      got=true; HF.listen=false; HF.note="语音识别要联网，先用「只听」模式"; hfThink();
-    }
+    if (c==="not-allowed" || c==="service-not-allowed" || c==="audio-capture"){ MICNO=true; if (HF){ HF.voice=false; renderHF(); } }
   };
-  rec.onend=function(){ if (!HF || run!==HF.run || got) return; clearTimeout(HF.t); HF.rec=null; hfRetry(); };
-  try{ rec.start(); }catch(e){ HF.rec=null; HF.phase="tap"; renderHF(); return; }
-  /* some browsers never report the end of listening; don't hang */
-  HF.t=setTimeout(function(){ if (!HF || run!==HF.run || got) return; got=true; try{ rec.abort(); }catch(e){} HF.rec=null; hfRetry(); }, 12000);
-}
-function hfRetry(){
-  if (!HF) return;
-  HF.tries++;
-  if (HF.tries>=3){ HF.phase="paused"; renderHF(); return; }
-  HF.phase="read"; renderHF();
-  var run=HF.run;
-  speakNow(line("Sorry, say A, B, C, or D.","没听清，请说 A、B、C 或 D。"), 0.95, function(){ if (HF && run===HF.run) hfListen(); });
-}
-function hfHeard(alts){
-  if (!HF) return;
-  var r=parseVoice(alts);
-  HF.heard=alts[0]||"";
-  if (r===null) return hfRetry();
-  if (r==="repeat") return hfRead();
-  if (r==="skip"){ hfNext(true); return; }
-  if (r==="stop"){ hfStop(); render(); return; }
-  hfAnswer(r);
+  rec.onend=function(){
+    if (!HF || run!==HF.run || HF.phase!=="answer") return;
+    HF.rec=null;
+    if (HF.voice && HF.left>2) hfListen();
+  };
+  try{ rec.start(); }catch(e){ HF.rec=null; }
 }
 function hfAnswer(o){
   if (!HF) return;
-  var id=curId(); if (id===null) return;
+  var id=curId(); if (id===null || S.rev) return;
   hfHalt();
   var opts=optsFor(id), ok=opts[o].ok, c=CARDS[id], L1=letterOf(id), mine="ABCD"[o];
   gradePick(o); save(); render();
   HF.phase=ok?"right":"wrong"; HF.ans=L1; renderHF();
   var parts = ok ? line("Correct.","答对了。") :
-    [].concat(line("Not quite. You said "+mine+". The answer is "+L1+": "+clean(c.a[0])+".", "不对，你选了 "+mine+"。正确答案是 "+L1+"："+clean(c.a[1])+"。"),
+    [].concat(line("Not quite. You chose "+mine+". The answer is "+L1+": "+clean(c.a[0])+".", "不对，你选了 "+mine+"。正确答案是 "+L1+"："+clean(c.a[1])+"。"),
               line(c.x[0], c.x[1]),
               vlang()==="en" ? [] : [["记住："+c.k,"zh"]]);
   var run=HF.run;
@@ -14330,9 +14327,10 @@ function hfAnswer(o){
 function hfReveal(){
   if (!HF) return;
   var id=curId(); if (id===null) return;
+  hfHalt();
   var c=CARDS[id], L1=letterOf(id);
   S.rev=true; S.fpick=null; S.graded=null; render();
-  HF.phase="answer"; HF.ans=L1; renderHF();
+  HF.phase="show"; HF.ans=L1; renderHF();
   var run=HF.run;
   speakNow([].concat(line("The answer is "+L1+": "+clean(c.a[0])+".","答案是 "+L1+"："+clean(c.a[1])+"。"), line(c.x[0], c.x[1]), vlang()==="en"?[]:[["记住："+c.k,"zh"]]), 0.95,
     function(){ if (!HF || run!==HF.run) return; if (S.mode==="smart") S.skip[id]=1; hfNext(false); });
@@ -14347,23 +14345,18 @@ function hfNext(skip){
 function renderHF(){
   var el=document.getElementById("hfbar");
   if (!HF){ el.hidden=true; el.innerHTML=""; return; }
-  var p=HF.phase, ic=IC.big, cls="", t="", sub="";
-  if (p==="read"){ t="正在读题…"; sub=HF.listen?"听完说出 A、B、C 或 D":"只听模式：读完停几秒，再念答案"; }
-  else if (p==="listen"){ ic=IC.mic; cls="listen"; t="请说 A、B、C 或 D"; sub="也可以说「重复」「跳过」「停止」"; }
-  else if (p==="think"){ ic=IC.dots; t="想一想…"; sub="几秒后公布答案"; }
+  var p=HF.phase, ic=IC.big, cls="", t="", sub="", canAnswer=(p==="read"||p==="answer");
+  var how=HF.voice ? "点或说 A、B、C、D" : "点下面的 A、B、C、D";
+  if (p==="read"){ t="正在读题…"; sub="听完"+how+"作答"; }
+  else if (p==="answer"){ ic=HF.voice?IC.mic:IC.dots; cls=HF.voice?"listen":""; t="请作答 · "+Math.max(0,HF.left)+" 秒"; sub=how+"；不答会自动念答案"; }
   else if (p==="right"){ ic=IC.ok; cls="right"; t="答对了"; sub="马上下一题"; }
   else if (p==="wrong"){ ic=IC.no; cls="wrong"; t="不对，正确答案是 "+HF.ans; sub="听完原因和记忆点，自动下一题"; }
-  else if (p==="answer"){ ic=IC.big; t="答案是 "+HF.ans; sub="听完原因，自动下一题"; }
-  else if (p==="tap"){ ic=IC.mic; t="点「说答案」再开口"; sub="这个浏览器要你点一下才开始听"; }
-  else if (p==="paused"){ ic=IC.pause; t="没听清，先暂停了"; sub="点「继续」，或者直接点选项作答"; }
-  if (HF.note && p!=="listen") sub=HF.note;
-  var mid = (p==="tap") ? '<button class="go" data-hf="listen">说答案</button>'
-          : (p==="paused") ? '<button class="go" data-hf="resume">继续</button>'
-          : '<button data-hf="mode">'+(HF.listen?'只听':'说答案')+'</button>';
-  if (!SR && p!=="tap" && p!=="paused") mid='<button data-hf="reveal">看答案</button>';
-  el.innerHTML='<div class="hf-in"><div class="hf-row"><div class="hf-ic '+cls+'">'+ic+'</div><div class="hf-tx"><b>'+esc(t)+'</b><span>'+esc(sub)+'</span></div></div>'+
+  else if (p==="show"){ ic=IC.big; t="答案是 "+HF.ans; sub="听完原因，自动下一题"; }
+  var abcd='<div class="hf-abcd">'+["A","B","C","D"].map(function(x,i){ return '<button data-hfa="'+i+'"'+(canAnswer?'':' disabled')+'>'+x+'</button>'; }).join("")+'</div>';
+  el.innerHTML='<div class="hf-in"><div class="hf-row"><div class="hf-ic '+cls+'">'+ic+'</div><div class="hf-tx"><b id="hfT">'+esc(t)+'</b><span>'+esc(sub)+'</span></div></div>'+
+    abcd+
     '<div class="hf-lang"><span>朗读</span>'+voicePicker('data-hfv')+'</div>'+
-    '<div class="hf-btns"><button data-hf="repeat">重复</button><button data-hf="skip">跳过</button>'+mid+'<button class="stop" data-hf="stop">停止</button></div></div>';
+    '<div class="hf-btns three"><button data-hf="repeat">重复</button><button data-hf="skip">跳过</button><button class="stop" data-hf="stop">停止</button></div></div>';
   el.hidden=false;
 }
 
@@ -14427,7 +14420,6 @@ function loadHub(){
     if (d.streak) HUB.streak={last:String(d.streak.last||""), n:+d.streak.n||0};
     if (d.day) HUB.day={d:String(d.day.d||""), n:+d.day.n||0};
     if (d.seen && typeof d.seen==="object") HUB.seen=d.seen;
-    if (d.hfListen===false) HUB.hfListen=false;
     if (d.voice==="both"||d.voice==="zh"||d.voice==="en") HUB.voice=d.voice;
   }catch(e){}
 }
@@ -15004,6 +14996,11 @@ function copyText(text, el){
 
 /* ---------- PLAN ---------- */
 var CHANGES=[
+  ["v9", "免提简单化", [
+    "免提只剩一个按钮：听完题，直接点下面的大字母 A、B、C、D 作答",
+    "不想点也行：12 秒不答，会自动念出答案和原因，再去下一题",
+    "手机允许麦克风的话，也可以直接说 A、B、C、D；不允许也没关系，不再弹出任何权限提示",
+    "去掉了「说答案 / 只听」切换和「没听清」的重复提示"]],
   ["v8", "独立网址", [
     "通关有了自己的网址：xvartx.github.io/passage，不用 Claude、不用登录就能打开",
     "在独立网址里用 Safari / Chrome 打开，就能「说答案」",
@@ -15138,7 +15135,7 @@ function act(a, d){
   if (a!=="gloss") closeSheet();
   if (HF){
     if (a==="fpick" && !S.rev){ hfAnswer(+d.o); return; }
-    if (a==="reveal" && !S.rev){ hfHalt(); hfReveal(); return; }
+    if (a==="reveal" && !S.rev){ hfReveal(); return; }
     if (a!=="gloss" && a!=="sayw" && a!=="hf") hfStop();
   }
   switch(a){
@@ -15267,27 +15264,16 @@ document.getElementById("sheet").addEventListener("click", function(e){
   save(); render(); renderSheet();
 });
 document.getElementById("hfbar").addEventListener("click", function(e){
+  if (!HF) return;
   var vb=e.target.closest("[data-hfv]");
-  if (vb && HF){ HUB.voice=vb.dataset.hfv; saveHub(); toast("朗读改成："+VNAME[HUB.voice]); hfRead(); return; }
-  var b=e.target.closest("[data-hf]"); if (!b || !HF) return;
+  if (vb){ HUB.voice=vb.dataset.hfv; saveHub(); toast("朗读改成："+VNAME[HUB.voice]); hfRead(); return; }
+  var ab=e.target.closest("[data-hfa]");
+  if (ab && !ab.disabled){ hfAnswer(+ab.dataset.hfa); return; }
+  var b=e.target.closest("[data-hf]"); if (!b) return;
   var k=b.dataset.hf;
   if (k==="stop"){ hfStop(); render(); return; }
   if (k==="repeat"){ hfRead(); return; }
   if (k==="skip"){ hfHalt(); hfNext(true); return; }
-  if (k==="listen"){ hfListen(); return; }
-  if (k==="resume"){ HF.tries=0; hfRead(); return; }
-  if (k==="reveal"){ hfHalt(); hfReveal(); return; }
-  if (k==="mode"){
-    if (HF.listen){ HF.listen=false; HF.note=""; HUB.hfListen=false; saveHub(); toast("已改成「只听」：读完停几秒，再念答案"); hfRead(); return; }
-    if (!SR){ toast("这个浏览器不支持语音作答，请用 Safari 或 Chrome 打开"); return; }
-    hfPrime(function(){
-      if (!HF) return;
-      HF.listen=true; HF.note=""; HF.first=true; HUB.hfListen=true; saveHub();
-      toast("已改成「说答案」：读完题直接说 A、B、C、D"); hfRead();
-    }, function(){
-      toast(EMBED ? "这个链接在 Claude 网页里运行，不能用麦克风。打开独立网址 xvartx.github.io/passage 就能说答案" : "没有麦克风权限：请在浏览器设置里允许这个网页使用麦克风");
-    });
-  }
 });
 document.addEventListener("click", function(e){
   if (!S.sheet) return;
@@ -15342,9 +15328,9 @@ if (!HUB.lang) HUB.lang=S.lang;
 saveHub();
 render();
 if (had && !HOME) resumeToast();
-if (!HUB.seen.v8){
-  HUB.seen.v3=1; HUB.seen.v4=1; HUB.seen.v5=1; HUB.seen.v6=1; HUB.seen.v7=1; HUB.seen.v8=1; saveHub();
-  if (had) setTimeout(function(){ toast(EMBED ? "已更新到 v8：通关有独立网址了，看页面上方的提示" : "已更新到 v8"); }, 3900);
+if (!HUB.seen.v9){
+  HUB.seen.v3=1; HUB.seen.v4=1; HUB.seen.v5=1; HUB.seen.v6=1; HUB.seen.v7=1; HUB.seen.v8=1; HUB.seen.v9=1; saveHub();
+  if (had) setTimeout(function(){ toast("已更新到 v9：免提更简单了，听完题点 A、B、C、D 就行"); }, 3900);
 }
 initSync();
 })();
