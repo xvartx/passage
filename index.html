@@ -14355,7 +14355,7 @@ function hfNext(skip){
   if (!HF) return;
   var id=curId();
   if (skip && S.mode==="smart" && id!==null) S.skip[id]=1;
-  advance(); save(); render(); window.scrollTo(0,0);
+  advance(); save(); render(); scrollToCard();
   hfRead();
 }
 function renderHF(){
@@ -14632,7 +14632,7 @@ function enterExam(k){
   if (k!==EXK) had=switchExam(k); else resumeClock();
   HOME=false; HUB.ex=k; saveHub();
   render(); window.scrollTo(0,0);
-  if (had) resumeToast();
+  if (had){ resumeToast(); if (S.tab==="cards" && (S.i>0 || Object.keys(S.srs).length)) setTimeout(scrollToCard, 60); }
 }
 function goHome(){
   hfStop(); closeSheet(); hush();
@@ -15013,7 +15013,10 @@ var CHANGES=[
     "答对自动下一题：答对后停一下就自动跳到下一题；答错会停在这一题，方便看解析",
     "可以在「计划」页的「设置」里随时关掉",
     "「下一张 / 下一题 / 再练 / 记住了」固定在屏幕底部，不用再往下滑找按钮",
-    "测验（速练、标准、错题）也一样：答对自动下一题，按钮在底部"]],
+    "测验（速练、标准、错题）也一样：答对自动下一题，按钮在底部",
+    "做题时卡片自动对齐到屏幕上方，四个选项不用往下滑就能全部看到",
+    "答错时自动滚到正确答案和原因，不用自己找",
+    "再次打开、接着上次时，直接停在题目上，不用先滑过进度面板"]],
   ["v9", "免提简单化", [
     "免提只剩一个按钮：听完题，直接点下面的大字母 A、B、C、D 作答",
     "不想点也行：12 秒不答，会自动念出答案和原因，再去下一题",
@@ -15153,6 +15156,15 @@ function speakCurrent(){
   if (id!==null) say(cardSpeech(id));
 }
 
+/* Keep the question where the eyes are: line the card up under the header, and after a miss bring the answer into view. */
+function headerH(){ var t=document.querySelector(".top"); return t ? t.getBoundingClientRect().height : 0; }
+function scrollToEl(el, smooth){
+  if (!el) return;
+  var y=el.getBoundingClientRect().top + (window.scrollY||window.pageYOffset) - headerH() - 8;
+  try{ window.scrollTo({top:Math.max(0,y), behavior:smooth?"smooth":"auto"}); }catch(e){ window.scrollTo(0, Math.max(0,y)); }
+}
+function scrollToCard(){ scrollToEl(document.querySelector(".fcard")); }
+function scrollToAnswer(){ scrollToEl(document.querySelector(".ans") || document.querySelector(".fb"), true); }
 /* The next step always sits at the bottom of the screen, so nobody has to scroll down to find it. */
 var AUTO_T=null, AUTO_MS=900;
 function clearAuto(){ if (AUTO_T){ clearTimeout(AUTO_T); AUTO_T=null; } }
@@ -15175,7 +15187,7 @@ function renderNext(){
   el.hidden=!h; document.body.classList.toggle("hasnext", !!h);
 }
 function act(a, d){
-  var top=false, id;
+  var top=false, card=false, ans=false, id;
   clearAuto();
   if (a!=="gloss") closeSheet();
   if (HF){
@@ -15201,26 +15213,27 @@ function act(a, d){
       if (curId()===null || S.rev) return;
       var okp=gradePick(+d.o), cid=curId(); save();
       if (okp && HUB.auto!==false){
-        AUTO_T=setTimeout(function(){ AUTO_T=null; if (S.tab==="cards" && !HF && S.rev && curId()===cid){ advance(); save(); render(); window.scrollTo(0,0); } }, AUTO_MS);
+        AUTO_T=setTimeout(function(){ AUTO_T=null; if (S.tab==="cards" && !HF && S.rev && curId()===cid){ advance(); save(); render(); scrollToCard(); } }, AUTO_MS);
       }
+      if (!okp) ans=true;
       break;
-    case "reveal": if (curId()===null) return; S.rev=true; S.fpick=null; S.graded=null; save(); break;
-    case "got": id=curId(); if (id===null) return; good(id); advance(); save(); top=true; break;
-    case "again": id=curId(); if (id===null) return; again(id); advance(); save(); top=true; break;
-    case "adv": if (curId()===null) return; advance(); save(); top=true; break;
+    case "reveal": if (curId()===null) return; S.rev=true; S.fpick=null; S.graded=null; save(); ans=true; break;
+    case "got": id=curId(); if (id===null) return; good(id); advance(); save(); card=true; break;
+    case "again": id=curId(); if (id===null) return; again(id); advance(); save(); card=true; break;
+    case "adv": if (curId()===null) return; advance(); save(); card=true; break;
     case "guessed":
       id=curId(); if (id===null) return;
       if (S.prev && S.prev.id===id) restoreSnap(S.prev);
       if (S.stats.n>0) S.stats.n--;
       if (HUB.day.n>0) HUB.day.n--;
       var ht=CARDS[id].t; if (S.hist[ht]) S.hist[ht]=S.hist[ht].slice(0,-1);
-      again(id); advance(); save(); toast("已放进错题本"); top=true; break;
-    case "prev": S.i=Math.max(0,S.i-1); resetCardUI(); setBm(); save(); break;
-    case "skip": S.i=Math.min(S.deck.length,S.i+1); resetCardUI(); setBm(); save(); break;
+      again(id); advance(); save(); toast("已放进错题本"); card=true; break;
+    case "prev": S.i=Math.max(0,S.i-1); resetCardUI(); setBm(); save(); card=true; break;
+    case "skip": S.i=Math.min(S.deck.length,S.i+1); resetCardUI(); setBm(); save(); card=true; break;
     case "sskip":
       S.skip[S.cur]=1; var nx=pickSmart(S.cur);
       if (nx===null){ S.skip={}; nx=pickSmart(S.cur); }
-      if (nx!==null) S.cur=nx; resetCardUI(); save(); break;
+      if (nx!==null) S.cur=nx; resetCardUI(); save(); card=true; break;
     case "ahead": S.cur=soonestDue(); resetCardUI(); save(); break;
     case "shuf": S.shuf=!S.shuf; buildDeck(); resetCardUI(); save(); break;
     case "showall": S.unm=false; buildDeck(); resetCardUI(); save(); break;
@@ -15244,7 +15257,8 @@ function act(a, d){
       else if (HUB.auto!==false){
         var qit=S.quiz.items[S.quiz.qi], qi0=S.quiz.qi;
         if (qit.opts[qit.pick].ok) AUTO_T=setTimeout(function(){ AUTO_T=null; if (S.tab==="quiz" && S.quiz && !S.quiz.done && S.quiz.qi===qi0) act("qnext",{}); }, AUTO_MS);
-      }
+        else ans=true;
+      } else if (!S.quiz.items[S.quiz.qi].opts[S.quiz.items[S.quiz.qi].pick].ok) ans=true;
       break;
     case "qnext": S.quiz.qi++; if (S.quiz.qi>=S.quiz.items.length){ S.quiz.qi=S.quiz.items.length-1; finishQuiz(); } save(); top=true; hush(); break;
     case "submit": finishQuiz(); top=true; break;
@@ -15298,6 +15312,8 @@ function act(a, d){
   }
   render();
   if (top) window.scrollTo(0,0);
+  else if (card) scrollToCard();
+  else if (ans) scrollToAnswer();
 }
 document.getElementById("nextbar").addEventListener("click", function(e){
   var b=e.target.closest("[data-act]"); if (!b || b.disabled) return;
@@ -15388,7 +15404,7 @@ var had=openExam(EXK);
 if (!HUB.lang) HUB.lang=S.lang;
 saveHub();
 render();
-if (had && !HOME) resumeToast();
+if (had && !HOME){ resumeToast(); if (S.tab==="cards" && (S.i>0 || Object.keys(S.srs).length)) setTimeout(scrollToCard, 60); }
 if (!HUB.seen.v10){
   ["v3","v4","v5","v6","v7","v8","v9","v10"].forEach(function(v){ HUB.seen[v]=1; }); saveHub();
   if (had) setTimeout(function(){ toast("已更新到 v10：答对自动下一题，按钮固定在底部"); }, 3900);
