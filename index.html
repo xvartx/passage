@@ -382,6 +382,21 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;text-decorat
 .hf-btns.three{grid-template-columns:repeat(3,1fr)}
 .hf-in{animation:none}
 .hfbar:not([hidden]) .hf-in{box-shadow:0 12px 36px rgba(15,23,42,.35)}
+/* v10: next step pinned to the bottom, settings switch */
+.nextbar{position:fixed;left:0;right:0;bottom:calc(60px + env(safe-area-inset-bottom,0px));z-index:6;padding:14px 16px 10px;background:linear-gradient(to bottom,transparent,var(--paper) 38%)}
+.nb-in{max-width:648px;margin:0 auto}
+.nb-in > .btn{width:100%;min-height:52px;font-size:16px;box-shadow:0 6px 18px rgba(15,23,42,.16)}
+.nb-in .grade .btn{min-height:52px;box-shadow:0 6px 18px rgba(15,23,42,.12)}
+body.hasnext main{padding-bottom:calc(170px + env(safe-area-inset-bottom,0px))}
+body.hasnext .toast{bottom:calc(140px + env(safe-area-inset-bottom,0px))}
+.setrow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.setrow b,.setlbl b{display:block;font-size:15px}
+.setrow small,.setlbl small{display:block;font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.45}
+.setlbl{margin-bottom:8px}
+.switch{flex:none;width:52px;height:32px;border-radius:16px;border:0;background:var(--line2);position:relative;transition:background .2s;padding:0}
+.switch i{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.switch[aria-checked="true"]{background:var(--moss)}
+.switch[aria-checked="true"] i{transform:translateX(20px)}
 </style>
 </head>
 <body>
@@ -407,6 +422,7 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;text-decorat
 
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <div id="sheet" class="sheet" role="dialog" aria-label="词条 Word" hidden></div>
+<div id="nextbar" class="nextbar" hidden></div>
 <div id="hfbar" class="hfbar" role="region" aria-label="免提模式 Hands-free" aria-live="polite" hidden></div>
 
 <nav class="tabs" aria-label="Sections">
@@ -13944,7 +13960,7 @@ return {TOPICS:TOPICS, CARDS:CARDS, MNEMONICS:MNEMONICS, NUMBERS:NUMBERS, PAIRS:
 <script>
 (function(){
 "use strict";
-var VERSION = "v9";
+var VERSION = "v10";
 var SITE = "https://xvartx.github.io/passage/";
 var EX = EXAMS;
 var EXMETA = {
@@ -13958,7 +13974,7 @@ var HUBKEY = "nycards-hub-v1", GOAL = 50, DAY = 864e5;
 var IV = [10*60*1000, DAY, 3*DAY, 7*DAY, 14*DAY, 30*DAY];
 var VIEWS = {cards:1, quiz:1, miss:1, cheat:1, plan:1};
 var HOME=false, TOPICS, CARDS, MNEMONICS, NUMBERS, PAIRS, MC, GLOSS, A, KEY, EXK=null, IDS={}, G={re:null, map:{}}, GI={};
-var HUB = {ex:null, lang:null, streak:{last:"", n:0}, day:{d:"", n:0}, seen:{}, voice:null};
+var HUB = {ex:null, lang:null, streak:{last:"", n:0}, day:{d:"", n:0}, seen:{}, voice:null, auto:true};
 function freshS(){
   return {lang:"both", tab:"cards", topic:"all", mode:"order", unm:false, shuf:false,
     known:new Set(), miss:{}, srs:{}, bm:{}, so:{}, cur:null, quiz:null, stats:{day:"", n:0}, upd:0, vocab:{}, hist:{},
@@ -14230,7 +14246,7 @@ function hfStart(){
   if (S.tab!=="cards"){ S.tab="cards"; save(); render(); }
   HF={phase:"read", voice:false, run:0, rec:null, t:null, tick:null, left:0, ans:null};
   document.body.classList.add("hf");
-  hfLock(true);
+  clearAuto(); hfLock(true); renderNext();
   if (SR && !EMBED && !MICNO) hfPrime();
   if (!HUB.seen.hf2){ HUB.seen.hf2=1; saveHub(); toast("听完题点 A、B、C、D 作答；不答的话，"+WAIT+" 秒后自动念答案"); }
   hfRead();
@@ -14257,7 +14273,7 @@ function hfStop(){
   if (!HF) return;
   hfHalt(); HF=null; hfLock(false);
   document.body.classList.remove("hf");
-  renderHF();
+  renderHF(); renderNext();
 }
 function hfRead(){
   if (!HF) return;
@@ -14421,6 +14437,7 @@ function loadHub(){
     if (d.day) HUB.day={d:String(d.day.d||""), n:+d.day.n||0};
     if (d.seen && typeof d.seen==="object") HUB.seen=d.seen;
     if (d.voice==="both"||d.voice==="zh"||d.voice==="en") HUB.voice=d.voice;
+    if (d.auto===false) HUB.auto=false;
   }catch(e){}
 }
 function saveHub(){ try{ localStorage.setItem(HUBKEY, JSON.stringify(HUB)); }catch(e){} }
@@ -14645,16 +14662,13 @@ function cardBody(id){
   }
   var picked=S.fpick!==null, right=picked && opts[S.fpick].ok, Lt=letterOf(id);
   h+='<div class="ans">';
-  if (picked) h+='<div class="verdict-s '+(right?'r':'w')+'">'+(right?'答对了':'选了 '+"ABCD"[S.fpick]+'，正确答案是 '+Lt)+'</div>';
+  if (picked) h+='<div class="verdict-s '+(right?'r':'w')+'">'+(right?(HUB.auto!==false && AUTO_T?'答对了 · 马上下一张':'答对了'):'选了 '+"ABCD"[S.fpick]+'，正确答案是 '+Lt)+'</div>';
   h+='<div><div class="lbl">正确答案 · '+Lt+'</div><div class="a">'+Lx(c.a,{g:1})+'</div></div>'+
      '<div class="small">'+Lx(c.x,{g:1})+'</div>'+
      '<div class="hook'+(picked&&!right?' big':'')+'"><div class="lbl">'+(picked&&!right?'记住这句':'记忆点')+'</div><p>'+esc(c.k)+'</p></div></div></article>';
   if (picked){
-    h+='<div class="nextrow"><button class="btn primary" data-act="adv">下一张</button>'+
-      (right ? '<button class="linkbtn" data-act="guessed" style="align-self:center">其实是蒙的，放进错题本</button>'
+    h+='<div class="nextrow">'+(right ? '<button class="linkbtn" data-act="guessed" style="align-self:center">其实是蒙的，放进错题本</button>'
              : '<p class="hint">已加入错题本，10 分钟后智能复习会再考你</p>')+'</div>';
-  } else {
-    h+='<div class="grade"><button class="btn bad" data-act="again">再练<small>加入错题本</small></button><button class="btn good" data-act="got">记住了<small>标记掌握</small></button></div>';
   }
   return h;
 }
@@ -14823,7 +14837,6 @@ function vQuizQ(){
          '<div class="hook big"><div class="lbl">记住这句</div><p>'+esc(c.k)+'</p></div>'+
          '<div class="small muted">已加入错题本，连续答对 2 次自动移除。</div></div>';
     }
-    h+='<button class="btn primary" data-act="qnext">'+(last?"看成绩":"下一题")+'</button>';
   }
   h+='<div class="row" style="justify-content:space-between">'+
      (mock?'<button class="linkbtn" data-act="submit">现在交卷</button>':'<span></span>')+
@@ -14996,6 +15009,11 @@ function copyText(text, el){
 
 /* ---------- PLAN ---------- */
 var CHANGES=[
+  ["v10", "答对自动下一题 + 按钮固定在底部", [
+    "答对自动下一题：答对后停一下就自动跳到下一题；答错会停在这一题，方便看解析",
+    "可以在「计划」页的「设置」里随时关掉",
+    "「下一张 / 下一题 / 再练 / 记住了」固定在屏幕底部，不用再往下滑找按钮",
+    "测验（速练、标准、错题）也一样：答对自动下一题，按钮在底部"]],
   ["v9", "免提简单化", [
     "免提只剩一个按钮：听完题，直接点下面的大字母 A、B、C、D 作答",
     "不想点也行：12 秒不答，会自动念出答案和原因，再去下一题",
@@ -15032,8 +15050,12 @@ function fill(s){ return String(s).replace(/\{N\}/g, CARDS.length).replace(/\{PE
 function vPlan(){
   var P=A.plan, max=0;
   P.outline.forEach(function(r){ if (r[2]>max) max=r[2]; });
-  var h='<section class="panel stack"><h3>朗读设置</h3><p class="small muted" style="margin:0">小喇叭和免提模式念题用哪种语言。双语是每句先念英文、再念中文。</p>'+
-    '<div class="modebar three" role="group" aria-label="朗读语言">'+voicePicker('data-act="voice" data-v')+'</div></section>';
+  var auto=HUB.auto!==false;
+  var h='<section class="panel stack"><h3>设置</h3>'+
+    '<div class="setrow"><span><b>答对自动下一题</b><small>答对后自动跳到下一题；答错会停下来，方便看解析</small></span>'+
+    '<button class="switch" data-act="autonext" role="switch" aria-checked="'+auto+'" aria-label="答对自动下一题"><i></i></button></div>'+
+    '<div><div class="setlbl"><b>朗读语言</b><small>小喇叭和免提念题用哪种语言；双语是每句先英文、再中文</small></div>'+
+    '<div class="modebar three" role="group" aria-label="朗读语言">'+voicePicker('data-act="voice" data-v')+'</div></div></section>';
   if (!EMBED && !STANDALONE){
     h+='<section class="panel stack"><h3>装到手机桌面</h3><ul class="clean small">'+
       '<li>iPhone：用 Safari 打开，点底部的分享按钮 → 「添加到主屏幕」</li>'+
@@ -15115,6 +15137,7 @@ function render(){
   var mc=missCount(), bd=document.getElementById("mbadge");
   bd.hidden=!mc; bd.textContent=mc;
   view.innerHTML=choosing ? vChoose() : VIEWFN[S.tab]();
+  renderNext();
   if (goalHit){ goalHit=false; toast("今日目标完成："+GOAL+" 题！"); }
 }
 var toastT=null;
@@ -15130,8 +15153,30 @@ function speakCurrent(){
   if (id!==null) say(cardSpeech(id));
 }
 
+/* The next step always sits at the bottom of the screen, so nobody has to scroll down to find it. */
+var AUTO_T=null, AUTO_MS=900;
+function clearAuto(){ if (AUTO_T){ clearTimeout(AUTO_T); AUTO_T=null; } }
+function nextBarHTML(){
+  if (HOME || !HUB.ex || HF) return "";
+  if (S.tab==="cards"){
+    if (curId()===null || !S.rev) return "";
+    if (S.fpick!==null) return '<button class="btn primary" data-act="adv">下一张 ›</button>';
+    return '<div class="grade"><button class="btn bad" data-act="again">再练<small>加入错题本</small></button><button class="btn good" data-act="got">记住了<small>标记掌握</small></button></div>';
+  }
+  if (S.tab==="quiz" && S.quiz && !S.quiz.done && S.quiz.mode!=="mock"){
+    if (S.quiz.items[S.quiz.qi].pick===null) return "";
+    return '<button class="btn primary" data-act="qnext">'+(S.quiz.qi===S.quiz.items.length-1?"看成绩":"下一题 ›")+'</button>';
+  }
+  return "";
+}
+function renderNext(){
+  var el=document.getElementById("nextbar"), h=nextBarHTML();
+  el.innerHTML=h ? '<div class="nb-in">'+h+'</div>' : "";
+  el.hidden=!h; document.body.classList.toggle("hasnext", !!h);
+}
 function act(a, d){
   var top=false, id;
+  clearAuto();
   if (a!=="gloss") closeSheet();
   if (HF){
     if (a==="fpick" && !S.rev){ hfAnswer(+d.o); return; }
@@ -15144,6 +15189,7 @@ function act(a, d){
     case "sayw": if (GLOSS[+d.g]) say(wordSpeech(+d.g), 0.85); return;
     case "hf": if (HF){ hfStop(); render(); } else hfStart(); return;
     case "pickex": enterExam(d.ex); return;
+    case "autonext": HUB.auto=(HUB.auto===false); saveHub(); toast(HUB.auto?"已开启：答对自动下一题":"已关闭：答对后自己点「下一张」"); break;
     case "hidemoved": HUB.seen.moved=1; saveHub(); break;
     case "cpsite":
       var tmp=document.createElement("textarea"); tmp.value=SITE; tmp.setAttribute("readonly",""); tmp.style.position="fixed"; tmp.style.opacity="0"; document.body.appendChild(tmp);
@@ -15151,7 +15197,13 @@ function act(a, d){
       return;
     case "voice": if (VNAME[d.v]){ HUB.voice=d.v; saveHub(); toast("朗读改成："+VNAME[d.v]); } break;
     case "mode": S.mode=d.m==="smart"?"smart":"order"; resetCardUI(); if (S.mode==="order") buildDeck(); ensureSmart(); save(); break;
-    case "fpick": if (curId()===null || S.rev) return; gradePick(+d.o); save(); break;
+    case "fpick":
+      if (curId()===null || S.rev) return;
+      var okp=gradePick(+d.o), cid=curId(); save();
+      if (okp && HUB.auto!==false){
+        AUTO_T=setTimeout(function(){ AUTO_T=null; if (S.tab==="cards" && !HF && S.rev && curId()===cid){ advance(); save(); render(); window.scrollTo(0,0); } }, AUTO_MS);
+      }
+      break;
     case "reveal": if (curId()===null) return; S.rev=true; S.fpick=null; S.graded=null; save(); break;
     case "got": id=curId(); if (id===null) return; good(id); advance(); save(); top=true; break;
     case "again": id=curId(); if (id===null) return; again(id); advance(); save(); top=true; break;
@@ -15188,7 +15240,12 @@ function act(a, d){
     case "pick":
       if (!S.quiz || S.quiz.done) return;
       if (S.quiz.mode!=="mock" && S.quiz.items[S.quiz.qi].pick!==null) return;
-      pick(+d.o); save(); if (S.quiz.mode==="mock") top=true; break;
+      pick(+d.o); save(); if (S.quiz.mode==="mock") top=true;
+      else if (HUB.auto!==false){
+        var qit=S.quiz.items[S.quiz.qi], qi0=S.quiz.qi;
+        if (qit.opts[qit.pick].ok) AUTO_T=setTimeout(function(){ AUTO_T=null; if (S.tab==="quiz" && S.quiz && !S.quiz.done && S.quiz.qi===qi0) act("qnext",{}); }, AUTO_MS);
+      }
+      break;
     case "qnext": S.quiz.qi++; if (S.quiz.qi>=S.quiz.items.length){ S.quiz.qi=S.quiz.items.length-1; finishQuiz(); } save(); top=true; hush(); break;
     case "submit": finishQuiz(); top=true; break;
     case "mprev": S.quiz.qi=Math.max(0,S.quiz.qi-1); save(); top=true; break;
@@ -15242,6 +15299,10 @@ function act(a, d){
   render();
   if (top) window.scrollTo(0,0);
 }
+document.getElementById("nextbar").addEventListener("click", function(e){
+  var b=e.target.closest("[data-act]"); if (!b || b.disabled) return;
+  act(b.dataset.act, b.dataset);
+});
 view.addEventListener("click", function(e){
   var b=e.target.closest("[data-act]"); if (!b || b.disabled) return;
   act(b.dataset.act, b.dataset);
@@ -15328,9 +15389,9 @@ if (!HUB.lang) HUB.lang=S.lang;
 saveHub();
 render();
 if (had && !HOME) resumeToast();
-if (!HUB.seen.v9){
-  HUB.seen.v3=1; HUB.seen.v4=1; HUB.seen.v5=1; HUB.seen.v6=1; HUB.seen.v7=1; HUB.seen.v8=1; HUB.seen.v9=1; saveHub();
-  if (had) setTimeout(function(){ toast("已更新到 v9：免提更简单了，听完题点 A、B、C、D 就行"); }, 3900);
+if (!HUB.seen.v10){
+  ["v3","v4","v5","v6","v7","v8","v9","v10"].forEach(function(v){ HUB.seen[v]=1; }); saveHub();
+  if (had) setTimeout(function(){ toast("已更新到 v10：答对自动下一题，按钮固定在底部"); }, 3900);
 }
 initSync();
 })();
