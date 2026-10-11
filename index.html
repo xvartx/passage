@@ -397,6 +397,21 @@ body.hasnext .toast{bottom:calc(140px + env(safe-area-inset-bottom,0px))}
 .switch i{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
 .switch[aria-checked="true"]{background:var(--moss)}
 .switch[aria-checked="true"] i{transform:translateX(20px)}
+/* v11: mobile touch comfort, update bar */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,a,select,input,textarea,label{touch-action:manipulation}
+input,select,textarea,.search{font-size:16px}
+.backup textarea{font-size:16px;line-height:1.35}
+.homebtn{width:44px;height:44px}
+.seg button{padding:8px 11px;font-size:13px}
+.spk,.hfb{height:38px;border-radius:19px}
+.spk{width:38px}
+.linkbtn{min-height:40px;padding:10px 0}
+.pager button{min-height:44px;padding:12px 6px}
+.opt:active:not([disabled]){transform:scale(.985)}
+[hidden]{display:none!important}
+.updbar{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:9;display:flex;justify-content:center;padding:0 16px;pointer-events:none}
+.updbar button{pointer-events:auto;border:0;background:#0F172A;color:#F8FAFC;font-weight:600;font-size:14px;padding:10px 16px;border-radius:999px;box-shadow:var(--shadow-lg)}
 </style>
 </head>
 <body>
@@ -423,6 +438,7 @@ body.hasnext .toast{bottom:calc(140px + env(safe-area-inset-bottom,0px))}
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <div id="sheet" class="sheet" role="dialog" aria-label="词条 Word" hidden></div>
 <div id="nextbar" class="nextbar" hidden></div>
+<div id="updbar" class="updbar" hidden><button data-upd="go">通关有新版本 · 点这里更新</button></div>
 <div id="hfbar" class="hfbar" role="region" aria-label="免提模式 Hands-free" aria-live="polite" hidden></div>
 
 <nav class="tabs" aria-label="Sections">
@@ -436,8 +452,8 @@ body.hasnext .toast{bottom:calc(140px + env(safe-area-inset-bottom,0px))}
 </nav>
 
 <script>
-var EXAMS = {};
-EXAMS.re = (function(){
+var EXAMS = {}, EXAMS_META = {};
+EXAMS.re = function(){
 const TOPICS = [
   ["lic", "License Law", "执照法规"],
   ["agency", "Law of Agency", "代理法"],
@@ -7297,8 +7313,9 @@ const APP = {
 };
 
 return {TOPICS:TOPICS, CARDS:CARDS, MNEMONICS:MNEMONICS, NUMBERS:NUMBERS, PAIRS:PAIRS, APP:APP, MC:(typeof MC!=='undefined'?MC:null), GLOSS:(typeof GLOSS!=='undefined'?GLOSS:[])};
-})();
-EXAMS.life = (function(){
+};
+EXAMS_META.re = {n:1002, key:"nyre-cards-v1"};
+EXAMS.life = function(){
 const TOPICS = [
   ["reg", "Insurance Regulation", "保险法规"],
   ["gen", "General Insurance Concepts", "保险基本概念"],
@@ -13955,14 +13972,17 @@ const APP = {
 };
 
 return {TOPICS:TOPICS, CARDS:CARDS, MNEMONICS:MNEMONICS, NUMBERS:NUMBERS, PAIRS:PAIRS, APP:APP, MC:(typeof MC!=='undefined'?MC:null), GLOSS:(typeof GLOSS!=='undefined'?GLOSS:[])};
-})();
+};
+EXAMS_META.life = {n:1024, key:"nylife-cards-v1"};
 </script>
 <script>
 (function(){
 "use strict";
-var VERSION = "v10";
+var VERSION = "v11";
 var SITE = "https://xvartx.github.io/passage/";
-var EX = EXAMS;
+var EX = EXAMS, XM = EXAMS_META;
+/* Exam data is built on first use, so opening the app only pays for the exam you're studying. */
+function exam(k){ if (typeof EX[k]==="function") EX[k]=EX[k](); return EX[k]; }
 var EXMETA = {
   re:  {zh:"房产销售员", en:"Real Estate Salesperson", sub:"纽约 · 房产销售员考试", doc:"progress",
         note:"75 题 · 90 分钟 · 可选中文卷"},
@@ -14421,13 +14441,40 @@ function applyState(d){
   }
   S.card0=d.card||null;
 }
-function persistLocal(){ if (!KEY) return; try{ localStorage.setItem(KEY, JSON.stringify(serialize())); }catch(e){} }
+/* Progress lives in localStorage. Every 20th save also refreshes a spare copy (KEY:bak) so a damaged save can be recovered,
+   and a browser that refuses to save (private mode, full storage) gets one clear warning instead of silently losing work. */
+var SAVES=0, SAVE_FAIL=false;
+function persistLocal(){
+  if (!KEY) return;
+  var json;
+  try{ json=JSON.stringify(serialize()); }catch(e){ return; }
+  try{
+    localStorage.setItem(KEY, json);
+    if (SAVES++ % 20 === 0) localStorage.setItem(KEY+":bak", json);
+    SAVE_FAIL=false;
+  }catch(e){
+    if (!SAVE_FAIL){ SAVE_FAIL=true; toast("这个浏览器存不了进度（可能开了无痕模式或空间满了），关掉后进度会丢。建议去「计划」生成进度码备份"); }
+  }
+}
+function readSaved(key){
+  var d=null;
+  try{ var raw=localStorage.getItem(key); if (raw) d=JSON.parse(raw); }catch(e){ d=null; }
+  if (!d || typeof d!=="object"){ try{ var bak=localStorage.getItem(key+":bak"); d=bak?JSON.parse(bak):null; }catch(e){ d=null; } }
+  return (d && typeof d==="object") ? d : null;
+}
+/* Ask the browser to keep this site's storage even when space runs low (no prompt in Safari/Chrome; asked once). */
+function askPersist(){
+  if (HUB.seen.persist) return;
+  HUB.seen.persist=1; saveHub();
+  try{ if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function(){}); }catch(e){}
+}
 function save(){ S.upd=Math.max(now(), S.upd+1); persistLocal(); pushSoon(); }
 function load(){
-  try{ var raw=localStorage.getItem(KEY); if (raw){ applyState(JSON.parse(raw)); return true; } }catch(e){}
+  var d=readSaved(KEY);
+  if (d){ applyState(d); return true; }
   return false;
 }
-function hasSaved(k){ try{ return localStorage.getItem(EX[k].APP.key)!==null; }catch(e){ return false; } }
+function hasSaved(k){ try{ return localStorage.getItem(XM[k].key)!==null || localStorage.getItem(XM[k].key+":bak")!==null; }catch(e){ return false; } }
 function loadHub(){
   try{
     var d=JSON.parse(localStorage.getItem(HUBKEY)||"null"); if (!d) return;
@@ -14485,7 +14532,7 @@ function push(k){
   if (s.busy){ s.dirty=true; return; }
   var body=null;
   if (k===EXK) body={upd:S.upd, p:JSON.stringify(serialize())};
-  else { try{ var raw=localStorage.getItem(EX[k].APP.key); body={upd:+JSON.parse(raw).upd||0, p:raw}; }catch(e){ return; } }
+  else { try{ var raw=localStorage.getItem(XM[k].key); body={upd:+JSON.parse(raw).upd||0, p:raw}; }catch(e){ return; } }
   s.busy=true; s.dirty=false;
   s.ref.set(body).then(function(){
     var was=s.on; s.on=true; if (!was && k===EXK && S.tab==="plan") render();
@@ -14512,9 +14559,12 @@ function bump(){
 function rec(id, ok){ var t=CARDS[id].t, s=(S.hist[t]||"")+(ok?"1":"0"); S.hist[t]=s.slice(-30); }
 function good(id){ S.known.add(id); hitMiss(id); var r=S.srs[id], b=r?Math.min(r.b+1,5):1; S.srs[id]={b:b, d:now()+IV[b]}; rec(id,true); bump(); }
 function again(id){ S.known.delete(id); addMiss(id); S.srs[id]={b:0, d:now()+IV[0]}; rec(id,false); bump(); }
+function buzz(){ try{ if (navigator.vibrate) navigator.vibrate(35); }catch(e){} }
 function gradePick(o){
   var id=curId(); if (id===null || S.rev) return false;
   var ok=optsFor(id)[o].ok;
+  if (!ok) buzz();
+  askPersist();
   S.prev=snapshot(id); if (ok) good(id); else again(id);
   S.fpick=o; S.rev=true; S.graded=ok?"good":"again";
   return ok;
@@ -14602,7 +14652,7 @@ function reloadFrom(d){
 
 /* ---------- switching between the two exams ---------- */
 function useExam(k){
-  var E=EX[k]; EXK=k;
+  var E=exam(k); EXK=k;
   TOPICS=E.TOPICS; CARDS=E.CARDS; MNEMONICS=E.MNEMONICS; NUMBERS=E.NUMBERS; PAIRS=E.PAIRS;
   MC=E.MC||null; GLOSS=E.GLOSS||[]; A=E.APP; KEY=A.key; IDS={};
   compileGloss();
@@ -14767,7 +14817,8 @@ function pick(o){
   if (q.mode==="mock"){ it.pick=o; if (q.qi < q.items.length-1) q.qi++; return; }
   if (it.pick!==null) return;
   it.pick=o;
-  if (it.opts[o].ok) good(it.id); else again(it.id);
+  if (it.opts[o].ok) good(it.id); else { again(it.id); buzz(); }
+  askPersist();
 }
 function vReady(){
   var R=readiness(), pp=A.passPct/100;
@@ -14975,7 +15026,7 @@ function makeCode(){
   Object.keys(EX).forEach(function(k){
     var d=null;
     if (k===EXK) d=serialize();
-    else { try{ var raw=localStorage.getItem(EX[k].APP.key); if (raw) d=JSON.parse(raw); }catch(e){} }
+    else d=readSaved(XM[k].key);
     if (d){ delete d.so; pack.ex[k]=d; }
   });
   var u=new TextEncoder().encode(JSON.stringify(pack));
@@ -14996,7 +15047,7 @@ function applyPack(pack){
   Object.keys(pack.ex).forEach(function(k){
     if (!EX[k] || k===EXK) return;
     var d=pack.ex[k]; d.upd=t+(n++);
-    try{ localStorage.setItem(EX[k].APP.key, JSON.stringify(d)); }catch(e){}
+    try{ localStorage.setItem(XM[k].key, JSON.stringify(d)); }catch(e){}
   });
   if (pack.streak && +pack.streak.n>streakNow()){ HUB.streak={last:String(pack.streak.last||""), n:+pack.streak.n||0}; saveHub(); }
   if (pack.ex[EXK]){ var tab=S.tab; reloadFrom(pack.ex[EXK]); S.tab=tab; save(); }
@@ -15009,6 +15060,13 @@ function copyText(text, el){
 
 /* ---------- PLAN ---------- */
 var CHANGES=[
+  ["v11", "离线可用 + 进度更安全 + 打开更快", [
+    "打开过一次以后，没网也能刷题；再次打开几乎是瞬间",
+    "有新版本时，底部会出现「点这里更新」，点一下就是最新版",
+    "进度更安全：自动保留一份备用存档，主存档坏了会自动恢复；浏览器存不了进度时会提醒你备份",
+    "两个窗口同时打开同一个考试，进度会互相同步",
+    "启动更快：只加载正在学的那个考试的题库",
+    "手机：点输入框不再放大页面，按钮更好点；答错时手机轻轻震一下（安卓）"]],
   ["v10", "答对自动下一题 + 按钮固定在底部", [
     "答对自动下一题：答对后停一下就自动跳到下一题；答错会停在这一题，方便看解析",
     "可以在「计划」页的「设置」里随时关掉",
@@ -15107,8 +15165,8 @@ function vPlan(){
 /* ---------- home: pick an exam ---------- */
 function examProgress(k){
   var d=null;
-  if (k===EXK) d=serialize(); else { try{ d=JSON.parse(localStorage.getItem(EX[k].APP.key)||"null"); }catch(e){} }
-  var n=EX[k].CARDS.length, known=d && d.known ? d.known.length : 0;
+  if (k===EXK) d=serialize(); else d=readSaved(XM[k].key);
+  var n=XM[k].n, known=d && d.known ? d.known.length : 0;
   var started=!!(d && (known || (d.srs && Object.keys(d.srs).length) || (d.bm && Object.keys(d.bm).length)));
   return {n:n, known:known, started:started};
 }
@@ -15391,6 +15449,22 @@ document.addEventListener("visibilitychange", function(){
   else { if (!HOME) resumeClock(); pull(false); }
 });
 window.addEventListener("pagehide", function(){ pauseClock(); persistLocal(); flush(); });
+/* Two tabs open on the same exam: pick up the other tab's newer progress (not in the middle of a quiz or hands-free). */
+window.addEventListener("storage", function(e){
+  if (!KEY || e.key!==KEY || !e.newValue || HOME) return;
+  var d=null; try{ d=JSON.parse(e.newValue); }catch(err){ return; }
+  if (!d || (+d.upd||0)<=S.upd || HF || (S.quiz && !S.quiz.done)) return;
+  reloadFrom(d); toast("已同步另一个窗口的进度");
+});
+/* Offline + instant reopen on the real website: a service worker keeps a copy of the app and tells us when a newer one is live. */
+function showUpdate(){ var u=document.getElementById("updbar"); if (u) u.hidden=false; }
+document.getElementById("updbar").addEventListener("click", function(){ persistLocal(); location.reload(); });
+if ("serviceWorker" in navigator && (location.protocol==="https:" || /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) && !EMBED){
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("sw.js").catch(function(){});
+    navigator.serviceWorker.addEventListener("message", function(e){ if (e.data && e.data.type==="updated") showUpdate(); });
+  });
+}
 if (canSpeak()){ pickVoice(); try{ window.speechSynthesis.addEventListener("voiceschanged", pickVoice); }catch(e){} }
 
 /* ---------- start: open exactly where you left off ---------- */
@@ -15405,9 +15479,9 @@ if (!HUB.lang) HUB.lang=S.lang;
 saveHub();
 render();
 if (had && !HOME){ resumeToast(); if (S.tab==="cards" && (S.i>0 || Object.keys(S.srs).length)) setTimeout(scrollToCard, 60); }
-if (!HUB.seen.v10){
-  ["v3","v4","v5","v6","v7","v8","v9","v10"].forEach(function(v){ HUB.seen[v]=1; }); saveHub();
-  if (had) setTimeout(function(){ toast("已更新到 v10：答对自动下一题，按钮固定在底部"); }, 3900);
+if (!HUB.seen.v11){
+  ["v3","v4","v5","v6","v7","v8","v9","v10","v11"].forEach(function(v){ HUB.seen[v]=1; }); saveHub();
+  if (had) setTimeout(function(){ toast("已更新到 v11：没网也能用，进度更安全"); }, 3900);
 }
 initSync();
 })();
