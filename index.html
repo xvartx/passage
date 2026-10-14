@@ -412,6 +412,11 @@ input,select,textarea,.search{font-size:16px}
 [hidden]{display:none!important}
 .updbar{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:9;display:flex;justify-content:center;padding:0 16px;pointer-events:none}
 .updbar button{pointer-events:auto;border:0;background:#0F172A;color:#F8FAFC;font-weight:600;font-size:14px;padding:10px 16px;border-radius:999px;box-shadow:var(--shadow-lg)}
+/* v13: 4-second auto-advance shows its countdown on the pinned button */
+.btn.auto{position:relative;overflow:hidden}
+.btn.auto > span{position:relative;z-index:1}
+.btn.auto .autofill{position:absolute;inset:0;background:rgba(255,255,255,.24);transform-origin:left center;transform:scaleX(0);animation-name:autofill;animation-timing-function:linear;animation-fill-mode:forwards;pointer-events:none}
+@keyframes autofill{to{transform:scaleX(1)}}
 </style>
 </head>
 <body>
@@ -5583,7 +5588,7 @@ CARDS.push(
  q:["A buyer refuses to sign a buyer agency agreement but wants to see homes. The agent can:","买家拒签买方代理协议但想看房。代理可以："],
  a:["Work with the buyer as a customer, without advocacy","把买家当顾客对待，不提供代言"],
  w:[["Refuse to show any homes by law","依法拒绝带看任何房子"],["Represent the buyer anyway","照样代表买家"],["Charge the buyer a fine","对买家罚款"]],
- x:["Without an agreement, the agent may represent the seller or act as a facilitator, as disclosed.","没有协议时，代理可代表卖家或按披露作为协调人。"],
+ x:["Without a buyer-agency agreement the buyer is a customer, owed honesty and fair dealing but not advocacy. Since August 2024, MLS rules also require a signed written agreement before touring with a buyer; it doesn't have to be an exclusive representation agreement.","没有买方代理协议，买家就是顾客：代理要诚实公平，但不替他争取。另外，自 2024 年 8 月起，MLS 规则要求带买家看房前先签书面协议，不一定是独家代理协议。"],
  k:"不签 = 当顾客服务"},
 {t:"agency",
  q:["A listing agreement expires. A buyer the agent introduced during the listing buys the home a week later directly from the owner. Whether a commission is owed usually depends on:","挂牌协议到期。代理在挂牌期间介绍的买家一周后直接向业主买下房子。是否要付佣金通常取决于："],
@@ -6667,6 +6672,805 @@ CARDS.push(
  k:"涨跌百分比的基数不同"}
 );
 
+CARDS.push(
+/* ---- v13: Law of Agency (11 of 77 syllabus hours, the largest unit) ---- */
+{t:"agency",
+ q:["Under the 2024 NAR settlement practice changes, an MLS participant working with a buyer must sign a written agreement with that buyer:","根据 2024 年 NAR 和解案后的新规，加入 MLS 的经纪人与买家合作时，必须在什么时候与买家签书面协议？"],
+ a:["Before touring a home","带看房子之前"],
+ w:[["Before closing","过户之前"],["Only once the buyer makes an offer","买家出价时才签"],["Within 30 days of the first showing","第一次带看后 30 天内"]],
+ x:["Since August 17, 2024, MLS rules require a signed written buyer agreement before the agent tours a home with the buyer, in person or by live video.","自 2024 年 8 月 17 日起，MLS 规则要求：经纪人带买家看房（实地或实时视频）之前，必须先签书面买家协议。"],
+ k:"先签协议，再带看"},
+{t:"agency",
+ q:["Under the 2024 practice changes, the compensation term in a written buyer agreement must be:","根据 2024 年新规，书面买家协议里的佣金条款必须："],
+ a:["Specific and objectively ascertainable","具体、可以客观算出"],
+ w:[["Whatever the seller decides to offer","卖家愿意给多少就多少"],["Left open as 'whatever the listing broker offers'","留空，写「挂牌经纪人给多少算多少」"],["Set by the MLS","由 MLS 规定"]],
+ x:["Open-ended terms such as 'whatever the seller pays' are not allowed. The amount or rate must be clear, for example 2.5% or $10,000.","不能写「卖家给多少算多少」这种开放式条款，金额或比例必须明确，例如 2.5% 或 1 万美元。"],
+ k:"佣金要写死：具体、可算、不开放"},
+{t:"agency",
+ q:["Since August 2024, may a listing broker advertise an offer of compensation to buyer brokers in the MLS?","2024 年 8 月起，挂牌经纪人还能在 MLS 上标出给买方经纪人的佣金吗？"],
+ a:["No, though it may be negotiated outside the MLS","不能，但可以在 MLS 之外协商"],
+ w:[["Yes, it is required","能，而且必须标"],["Only for listings over $1 million","只有 100 万以上的房源可以"],["Only with written Department of State approval first","须事先取得州务厅书面批准"]],
+ x:["Offers of compensation were removed from the MLS. A seller may still agree to pay a buyer's broker through negotiation off the MLS.","MLS 上不再显示佣金报价。卖家仍可以在 MLS 之外，通过协商同意支付买方经纪人。"],
+ k:"MLS 不挂佣金，场外可谈"},
+{t:"agency",
+ q:["A buyer signs a written buyer agreement. Does that replace the NY Agency Disclosure Form?","买家签了书面买家协议，还需要纽约的代理披露表吗？"],
+ a:["No; both are required","需要，两样都要"],
+ w:[["Yes, the agreement replaces it","不需要，协议可以代替"],["Only in New York City","只有纽约市需要"],["Only for rentals","只有租房需要"]],
+ x:["The Agency Disclosure Form (RPL §443) is a separate legal duty at the first substantive contact. The buyer agreement is a contract; the form is a disclosure.","代理披露表（RPL §443）是独立的法定义务，在第一次实质性接触时提供。买家协议是合同，披露表是披露。"],
+ k:"协议 ≠ 披露表，两样都要"},
+{t:"agency",
+ q:["A buyer agreement that lets the buyer work with other brokers at the same time is:","允许买家同时与其他经纪人合作的买家协议是："],
+ a:["Non-exclusive","非独家协议"],
+ w:[["Exclusive right to represent","独家代理权协议"],["Exclusive agency","独家代理协议"],["Dual agency","双重代理"]],
+ x:["The 2024 changes don't require exclusivity. A written non-exclusive agreement satisfies the rule.","2024 年新规不要求独家，书面的非独家协议也符合要求。"],
+ k:"Non-exclusive = 可以同时找别家"},
+{t:"agency",
+ q:["Under the 2024 practice changes, a buyer's broker may receive total compensation that is:","根据 2024 年新规，买方经纪人能拿到的佣金总额："],
+ a:["No more than the written agreement states","不能超过书面协议写的数额"],
+ w:[["Whatever the seller offers, even if higher","卖家给多少都可以，哪怕更高"],["Unlimited if the buyer later agrees orally","买家事后口头同意就不设上限"],["Set by the listing broker","由挂牌经纪人决定"]],
+ x:["A buyer's broker can't accept more than the amount or rate in the buyer agreement, from any source.","不管钱从哪里来，买方经纪人都不能收超过协议写明的数额或比例。"],
+ k:"不能多拿协议以外的钱"},
+{t:"agency",
+ q:["Under the 2024 practice changes, buyers must be told, in a conspicuous written disclosure, that:","根据 2024 年新规，必须用醒目的书面方式告诉买家："],
+ a:["Broker fees are not set by law and are negotiable","经纪人佣金不是法律规定的，可以协商"],
+ w:[["The buyer must pay 3%","买家必须付 3%"],["The seller is always the one who pays the buyer's broker","永远由卖家支付买方经纪人"],["The MLS sets all fees","所有费用由 MLS 决定"]],
+ x:["This statement usually appears in the buyer agreement itself, though a separate written disclosure also satisfies the rule.","这句话通常写在买家协议里，也可以用单独的书面披露来满足要求。"],
+ k:"协议要写：佣金可谈，非法定"},
+{t:"agency",
+ q:["A buyer visits an open house on her own and chats with the listing agent. Under the 2024 rules, a written buyer agreement is:","买家自己去看开放日，和挂牌代理聊了几句。按 2024 年新规，书面买家协议："],
+ a:["Not required for that visit","这次不需要"],
+ w:[["Required before she walks in","进门前就必须签"],["Required within 24 hours","24 小时内必须签"],["Required only for cash buyers","只有现金买家需要"]],
+ x:["The agreement is triggered when an agent works with the buyer to tour homes, not by an open-house visit or a first conversation.","触发签协议的是经纪人替买家安排看房，不是逛开放日或第一次聊天。"],
+ k:"逛开放日 ≠ 要签协议"},
+{t:"agency",
+ q:["In NY, when must a listing agent give the Agency Disclosure Form to the seller?","在纽约，挂牌代理必须在什么时候把代理披露表交给卖家？"],
+ a:["Before the listing agreement is signed","签挂牌协议之前"],
+ w:[["At closing","过户时"],["After the first offer arrives","收到第一个报价后"],["Only after the seller asks for it in writing","卖家书面要求后才给"]],
+ x:["Sellers get the form before entering into the listing agreement; buyers get it at the first substantive contact.","卖家在签挂牌协议之前拿到表；买家在第一次实质性接触时拿到。"],
+ k:"签挂牌前先给披露表"},
+{t:"agency",
+ q:["Does NY's agency disclosure law (RPL §443) apply to the sale of a co-op apartment?","纽约代理披露法（RPL §443）适用于合作公寓的买卖吗？"],
+ a:["Yes; condo and co-op units are covered","适用，共管和合作公寓都包括"],
+ w:[["No; co-op shares are personal property","不适用，合作公寓股份是动产"],["Only in New York City","只在纽约市适用"],["Only in buildings under 4 units","只适用于 4 户以下楼宇"]],
+ x:["Residential property under §443 includes 1–4 family homes, condo and co-op units, and vacant land for such homes.","§443 所说的住宅包括 1–4 户住宅、共管和合作公寓单元，以及用于建这类住宅的空地。"],
+ k:"Co-op/Condo 也要给披露表"},
+{t:"agency",
+ q:["A NY broker must keep signed agency disclosure forms, or declarations of refusal, for at least:","纽约经纪人必须把签好的代理披露表或拒签声明保存至少："],
+ a:["3 years","3 年"],
+ w:[["1 year","1 年"],["6 years","6 年"],["Until closing","到过户为止"]],
+ x:["RPL §443 requires keeping a copy for at least three years, the same as other transaction records.","RPL §443 要求至少保存三年，和其他交易记录一样。"],
+ k:"披露表留 3 年"},
+{t:"agency",
+ q:["Which role is NOT one of the choices on the NY Agency Disclosure Form?","以下哪个角色不在纽约代理披露表的选项里？"],
+ a:["Transaction broker (non-agent facilitator)","交易经纪人（不当代理的协调人）"],
+ w:[["Broker's agent","经纪人的代理"],["Dual agent with designated sales agents","带指定销售代理的双重代理"],["Seller's agent","卖方代理"]],
+ x:["NY's form lists seller's (landlord's) agent, buyer's (tenant's) agent, broker's agent, dual agent, and dual agent with designated sales agents. NY doesn't recognize a non-agent facilitator.","纽约表格列的是：卖方（房东）代理、买方（租客）代理、经纪人的代理、双重代理、带指定销售代理的双重代理。纽约不承认不当代理的「协调人」。"],
+ k:"纽约没有 transaction broker"},
+{t:"agency",
+ q:["When one NY firm will represent both the seller and the buyer in the same deal, both parties must sign:","同一家纽约公司要在同一笔交易里同时代表卖家和买家，双方都必须签："],
+ a:["An informed consent to dual agency","双重代理知情同意书"],
+ w:[["A new exclusive right to sell listing agreement","新的独家出售权挂牌协议"],["An estoppel certificate","禁反言证明"],["A power of attorney","授权委托书"]],
+ x:["Dual agency is legal in NY only with the informed written consent of both seller and buyer.","在纽约，只有卖家和买家都书面知情同意，双重代理才合法。"],
+ k:"双重代理 = 双方签知情同意书"},
+{t:"agency",
+ q:["In dual agency with designated sales agents, the brokerage firm itself:","在带指定销售代理的双重代理中，经纪公司本身："],
+ a:["Remains a dual agent","仍然是双重代理"],
+ w:[["Becomes the seller's agent only","变成只代表卖家"],["Stops being anyone's agent","不再代理任何人"],["Becomes the buyer's agent only","变成只代表买家"]],
+ x:["Each designated agent may advocate for their own party, but the broker stays a dual agent who can't advocate for either side.","指定代理可以各自为自己一方争取，但经纪人本身仍是双重代理，不能偏向任何一方。"],
+ k:"指定代理各帮各，公司仍是双重代理"},
+{t:"agency",
+ q:["A dual agent tells the buyer, 'The seller will probably take $20,000 less.' This is:","双重代理告诉买家：「卖家大概能再便宜 2 万。」这属于："],
+ a:["A breach of confidentiality","违反保密义务"],
+ w:[["Allowed, since the agent represents both","可以，因为代理代表双方"],["A required disclosure","法定必须披露的信息"],["Puffing","夸大宣传"]],
+ x:["A dual agent owes confidentiality to both parties and can't reveal either side's bargaining position.","双重代理对双方都有保密义务，不能透露任何一方的底线。"],
+ k:"双重代理：两边秘密都要守"},
+{t:"agency",
+ q:["May a NY buyer give advance written consent to in-house dual agency?","纽约买家可以事先书面同意公司内部的双重代理吗？"],
+ a:["Yes","可以"],
+ w:[["No, only sellers may","不可以，只有卖家可以"],["Only orally","只能口头同意"],["Only after an offer is accepted","只能在报价被接受后"]],
+ x:["Buyers, like sellers, can consent in advance in writing. The firm must still give the dual agency disclosure when the situation actually arises.","买家和卖家一样可以事先书面同意；真正发生时，公司仍要再做双重代理披露。"],
+ k:"买家也能提前书面同意"},
+{t:"agency",
+ q:["During a deal, a buyer's agent is about to become a dual agent. The agent must first:","交易中，买方代理即将变成双重代理。代理必须先："],
+ a:["Disclose the change and get both parties' written consent","披露变化，并取得双方书面同意"],
+ w:[["Do nothing, because the first disclosure form already covers it","什么都不用做，第一张披露表已经涵盖了"],["Tell only the broker","只告诉经纪人"],["Wait until closing to mention it","等过户时再说"]],
+ x:["A new role needs a new disclosure. Acting as a dual agent without informed written consent is undisclosed dual agency.","角色变了就要重新披露。没有书面知情同意就当双重代理，属于未披露的双重代理。"],
+ k:"角色变了 → 重新披露、重新同意"},
+{t:"agency",
+ q:["When a salesperson takes a listing, the agency relationship is between the seller and the:","销售员接了一个挂牌，代理关系存在于卖家和谁之间？"],
+ a:["Brokerage (the broker)","经纪公司（经纪人）"],
+ w:[["Salesperson personally","销售员个人"],["Multiple listing service","MLS"],["Buyer's agent","买方代理"]],
+ x:["Salespersons act on their broker's behalf. The listing and the agency belong to the firm.","销售员是代表经纪人行事，挂牌和代理关系都属于公司。"],
+ k:"代理关系属于公司，不属于个人"},
+{t:"agency",
+ q:["A subagent of the listing broker owes fiduciary duties to the:","挂牌经纪人的次级代理（subagent）对谁负有信托义务？"],
+ a:["Seller","卖家"],
+ w:[["Buyer","买家"],["Buyer and seller equally","买卖双方平等"],["No one","谁都不欠"]],
+ x:["A subagent works for the seller through the listing broker, so the seller can be vicariously liable for the subagent's acts.","次级代理经由挂牌经纪人为卖家工作，所以卖家可能要为次级代理的行为承担替代责任。"],
+ k:"Subagent 效忠卖家"},
+{t:"agency",
+ q:["The seller can be vicariously liable for the acts of which agent?","卖家可能要为哪种代理的行为承担替代责任？"],
+ a:["A subagent","次级代理（subagent）"],
+ w:[["A broker's agent","经纪人的代理"],["The buyer's agent","买方代理"],["None of them","都不用"]],
+ x:["The seller authorizes subagency, so the seller answers for subagents. A broker's agent is hired by the listing broker, so the seller isn't vicariously liable.","次级代理是卖家授权的，所以卖家要负责；经纪人的代理是挂牌经纪人雇的，卖家不承担替代责任。"],
+ k:"subagent 卖家担责；broker's agent 不担"},
+{t:"agency",
+ q:["An agent represents a client without being paid. The relationship is:","代理不收钱为客户服务，这种关系："],
+ a:["Still an agency, with full fiduciary duties","仍然是代理，信托义务一样不少"],
+ w:[["Not an agency at all","根本不算代理"],["Illegal in NY","在纽约违法"],["Only a customer relationship with no fiduciary duties","只算顾客关系，没有信托义务"]],
+ x:["Agency comes from agreeing to act on someone's behalf, not from payment. This is called gratuitous agency.","代理关系来自「同意代表某人行事」，不是来自收钱，这叫无偿代理。"],
+ k:"不收钱也是代理"},
+{t:"agency",
+ q:["An agency coupled with an interest, where the agent has a stake in the property, generally:","代理人对房产本身有利益的「附利益代理」一般："],
+ a:["Can't be revoked by the principal alone","委托人不能单方撤销"],
+ w:[["Ends automatically when the principal dies","委托人去世就自动结束"],["Is the same as a general agency","和一般代理一样"],["Is illegal in NY","在纽约违法"]],
+ x:["Because the agent holds an interest of their own, the principal can't simply cancel the authority.","因为代理人自己也有利益，委托人不能说取消就取消。"],
+ k:"代理人有利益 → 委托人不能单方取消"},
+{t:"agency",
+ q:["An agent ends the agency relationship by giving notice to the client. This is:","代理通知客户，主动结束代理关系，这叫："],
+ a:["Renunciation","代理人辞任（renunciation）"],
+ w:[["Revocation","委托人撤销（revocation）"],["Ratification","追认"],["Novation","合同更新"]],
+ x:["Renunciation is by the agent; revocation is by the principal. Either one may owe damages under the contract.","Renunciation 是代理人提出，revocation 是委托人提出。按合同，任何一方都可能要赔偿。"],
+ k:"代理人退出 = renunciation；委托人取消 = revocation"},
+{t:"agency",
+ q:["In NY, a residential exclusive listing must come with a Department of State–required written explanation of:","在纽约，住宅独家挂牌必须附上州务厅要求的书面说明，解释："],
+ a:["'Exclusive right to sell' versus 'exclusive agency'","「独家出售权」和「独家代理」的区别"],
+ w:[["How the property's taxes and assessments are calculated","房产税和评估值怎么算"],["The buyer's mortgage terms","买家的贷款条件"],["The cost of title insurance","产权保险的费用"]],
+ x:["Under DOS rules (19 NYCRR 175.24), the seller must receive and sign the explanation of the two exclusive listing types.","按州务厅规定（19 NYCRR 175.24），卖家必须收到并签署这两种独家挂牌的说明。"],
+ k:"独家挂牌要附两种定义的说明"},
+{t:"agency",
+ q:["Real estate commission rates in NY are:","纽约的房地产佣金比例是："],
+ a:["Negotiable between the client and the broker","由客户和经纪人协商"],
+ w:[["Set by the Department of State","由州务厅规定"],["Set by the local Board of Realtors in each county","由各县房地产协会规定"],["Fixed at 6% by law","法律规定 6%"]],
+ x:["Any agreement among competing brokers to set rates is price fixing under antitrust law.","竞争经纪人之间约定费率，属于反垄断法禁止的价格操纵。"],
+ k:"佣金可议，不能串通"},
+{t:"agency",
+ q:["A buyer offers the full list price with no conditions, exactly matching the listing terms, and the seller refuses. Under most listing agreements, the broker:","买家按挂牌价、无任何条件出价，完全符合挂牌条款，卖家却拒绝了。按大多数挂牌协议，经纪人："],
+ a:["Has earned the commission","已经赚到佣金"],
+ w:[["Earns nothing","什么都拿不到"],["Earns half the commission","拿一半佣金"],["Must find a second buyer first","必须再找一个买家"]],
+ x:["Producing a ready, willing, and able buyer on the seller's terms earns the commission, even if the seller then backs out.","按卖家条件找到「有意愿、有能力、已准备好」的买家，就赚到了佣金，哪怕卖家反悔。"],
+ k:"按条件找到买家 = 佣金已赚到"},
+{t:"agency",
+ q:["A 'ready, willing, and able' buyer is one who:","「有意愿、有能力、已准备好」的买家是指："],
+ a:["Will buy on the seller's terms and can pay","愿意按卖家条件买，并且付得起"],
+ w:[["Has toured the home twice","看过两次房"],["Has signed the agency disclosure form and toured twice","签过代理披露表并看过两次房"],["Got prequalified online","在网上做过预审"]],
+ x:["Ready and willing means agreeing to the terms; able means having the cash or financing to close.","「准备好、愿意」指同意条件；「有能力」指有现金或贷款能完成交易。"],
+ k:"愿意 + 付得起"},
+{t:"agency",
+ q:["A seller's agent receives three offers. Without the seller's permission, the agent may NOT:","卖方代理收到三个报价。未经卖家允许，代理不能："],
+ a:["Reveal one buyer's terms to the other buyers","把一个买家的条件透露给其他买家"],
+ w:[["Present all three offers to the seller at the same time","同时把三个报价都交给卖家"],["Acknowledge receiving the offers","告知已收到报价"],["Explain the offers to the seller","向卖家解释这些报价"]],
+ x:["Offer terms are the seller's confidential information, and every offer goes to the seller.","报价内容是卖家的保密信息，所有报价都要交给卖家。"],
+ k:"报价内容保密，全部交给卖家"},
+{t:"agency",
+ q:["A home is listed 'as is.' The listing agent knows the roof leaks. The agent:","房子按「现状」出售，挂牌代理知道屋顶漏水。代理："],
+ a:["Must still disclose the known defect","仍然必须披露这个已知缺陷"],
+ w:[["May stay silent because it's 'as is'","因为是现状出售，可以不说"],["Must lower the price","必须降价"],["Must hire a roofer before listing","挂牌前必须请人修"]],
+ x:["'As is' means the seller won't make repairs. It doesn't permit hiding known material defects.","「现状出售」是卖家不负责维修，不代表可以隐瞒已知的重大缺陷。"],
+ k:"As is ≠ 可以隐瞒"},
+{t:"agency",
+ q:["A buyer's agent owes the seller, who is a customer:","买方代理对卖家（顾客）负有："],
+ a:["Honesty and fair dealing","诚实与公平对待"],
+ w:[["Loyalty and confidentiality","忠诚与保密"],["Obedience","服从"],["Advocacy in negotiations","谈判中为其争取"]],
+ x:["Fiduciary duties go only to the buyer-client. Toward the seller, the buyer's agent must still be honest and deal fairly.","信托义务只对买家客户。对卖家，买方代理仍然要诚实、公平。"],
+ k:"对客户：信托义务；对顾客：诚实公平"},
+{t:"agency",
+ q:["To win a listing, an agent suggests a price far above what the market data supports. This is:","为了抢到挂牌，代理建议一个远高于市场数据支持的价格。这属于："],
+ a:["Misleading the seller","误导卖家"],
+ w:[["Good salesmanship","销售技巧好"],["Required by DOS","州务厅要求的"],["Harmless puffing that's always allowed","无害的夸大宣传，永远允许"]],
+ x:["Inflating the price to 'buy' a listing misleads the client and breaches the duty of reasonable care.","故意报高价「买」挂牌，误导客户，违反合理谨慎义务。"],
+ k:"虚报高价抢挂牌 = 误导"},
+{t:"agency",
+ q:["A seller tells her agent, 'No sign on my lawn.' The agent should:","卖家对代理说：「不要在我家草坪插牌子。」代理应该："],
+ a:["Follow the instruction","照做"],
+ w:[["Put up a sign anyway","照样插牌"],["Cancel the listing","取消挂牌"],["Ask the Department of State","去问州务厅"]],
+ x:["The duty of obedience covers all lawful instructions, and a no-sign request is lawful.","服从义务涵盖所有合法指示，不插牌是合法要求。"],
+ k:"合法指示要服从"},
+{t:"agency",
+ q:["The letters OLD CAR help you remember the agent's fiduciary duties. They stand for:","OLD CAR 帮你记住代理的信托义务，代表："],
+ a:["Obedience, loyalty, disclosure, confidentiality, accounting, reasonable care","服从、忠诚、披露、保密、账目、合理谨慎"],
+ w:[["Offer, listing, deposit, closing, appraisal, recording","报价、挂牌、定金、过户、估价、登记"],["Ownership, lien, deed, contract, assessment, rent","所有权、留置权、契据、合同、评估、租金"],["Obedience, licensing, dual agency, commission, advertising, records","服从、执照、双重代理、佣金、广告、记录"]],
+ x:["Those six duties are owed to the client, not to customers.","这六项义务是对客户（client）的，不是对顾客（customer）。"],
+ k:"OLD CAR 六大义务"},
+{t:"agency",
+ q:["An agent's fiduciary duties to a client begin when:","代理对客户的信托义务从什么时候开始？"],
+ a:["The agency relationship is formed","代理关系成立时"],
+ w:[["The buyer and seller sign the sales contract","买卖双方签买卖合同时"],["Closing takes place","过户时"],["The first offer is made","第一次出价时"]],
+ x:["Duties start once the agent agrees to represent the client. Confidentiality continues even after the relationship ends.","代理同意代表客户时义务就开始了；保密义务在关系结束后还会继续。"],
+ k:"代理成立即开始"},
+{t:"agency",
+ q:["A buyer's agent discovers the seller is her cousin. The agent should:","买方代理发现卖家是自己的表亲。代理应该："],
+ a:["Disclose the relationship to the buyer","向买家披露这层关系"],
+ w:[["Keep it private","保密不说"],["Tell only the seller","只告诉卖家"],["Refuse to show the home to avoid a conflict","为避免冲突拒绝带看"]],
+ x:["Any personal relationship that could affect loyalty must be disclosed to the client.","任何可能影响忠诚的私人关系都必须向客户披露。"],
+ k:"亲戚关系要披露"},
+{t:"agency",
+ q:["A licensee sells a house she owns personally. She must:","持牌人卖自己名下的房子，她必须："],
+ a:["Disclose in writing that she is a licensee","书面说明自己是持牌人"],
+ w:[["Use a different name","用别的名字"],["Keep her license status private","不提自己有执照"],["Get Department of State approval before listing","挂牌前取得州务厅批准"]],
+ x:["Licensees buying or selling for themselves must make their license status known to the other party.","持牌人自己买卖房产时，必须让对方知道自己有执照。"],
+ k:"自己买卖要表明持牌身份"},
+{t:"agency",
+ q:["A buyer at a showing says she already has her own buyer's agent. The listing agent should negotiate:","看房时买家说自己已经有买方代理。挂牌代理应该怎样谈？"],
+ a:["Through the buyer's agent","通过买家的代理"],
+ w:[["Directly with the buyer, without telling her agent","绕过她的代理直接谈"],["Only by text message","只用短信谈"],["Not at all","完全不谈"]],
+ x:["Negotiating directly with a represented party interferes with that agency relationship and is improper.","绕过对方代理直接谈判，会干扰对方的代理关系，是不当行为。"],
+ k:"对方有代理 → 通过代理沟通"},
+{t:"agency",
+ q:["A listing agent finds an open permit for an unfinished deck on the property. The agent should:","挂牌代理发现房子有一个甲板工程的许可证一直没结案。代理应该："],
+ a:["Tell the seller and disclose it to buyers","告诉卖家，并向买家披露"],
+ w:[["Ignore it","不管它"],["Ask the town to delete the record","请镇政府删除记录"],["Mention it to the buyer only after the closing","过户以后再告诉买家"]],
+ x:["Open permits are material facts that can affect value, financing, and closing.","未结案的许可证是重大事实，会影响房价、贷款和过户。"],
+ k:"未结许可 = 重大事实"},
+{t:"agency",
+ q:["A broker treats a salesperson as an independent contractor. Who supervises the salesperson's real estate activities?","经纪人把销售员当作独立承包商。谁来监督销售员的房地产业务？"],
+ a:["The sponsoring broker","担保经纪人"],
+ w:[["No one","没人管"],["The MLS","MLS"],["The Department of State directly","州务厅直接管"]],
+ x:["Independent contractor status is about taxes. NY still requires the broker to supervise every associated licensee.","独立承包商身份只关乎税务；纽约仍要求经纪人监督旗下所有持牌人。"],
+ k:"独立承包商也要被监督"},
+{t:"agency",
+ q:["Under NYC's FARE Act (effective June 2025), when a landlord hires a broker to list an apartment, the broker's fee is paid by:","根据纽约市 FARE 法（2025 年 6 月生效），房东雇经纪人挂牌出租公寓时，经纪费由谁付？"],
+ a:["The landlord","房东"],
+ w:[["The tenant","租客"],["Split 50/50 by law","法律规定一人一半"],["The city","市政府"]],
+ x:["Whoever hires the broker pays. A tenant pays only a broker the tenant hired.","谁雇经纪人谁付钱。租客只为自己雇的经纪人付费。"],
+ k:"谁雇谁付"},
+{t:"agency",
+ q:["Under an exclusive right to represent (buyer) agreement, the buyer's broker is paid:","在买方独家代理权协议下，买方经纪人什么时候能拿到佣金？"],
+ a:["Even if the buyer finds the home on her own","即使买家自己找到房子也能拿"],
+ w:[["Only if the broker personally finds and shows the home","只有经纪人亲自找到并带看的房子才行"],["Never by the buyer","买家永远不付"],["Only for new construction","只限新房"]],
+ x:["Like an exclusive right to sell, the broker earns the fee if the buyer buys during the term, however the home was found.","和独家出售权一样，只要买家在协议期内买了房，不管怎么找到的，经纪人都能拿佣金。"],
+ k:"买方独家 = 买家自己找到也付"},
+{t:"agency",
+ q:["Implied agency can arise when:","默示代理可能在什么情况下产生？"],
+ a:["An agent acts as someone's advocate and that person relies on it","代理像代表某人一样行事，而对方依赖这一点"],
+ w:[["A written agreement is signed","签了书面协议"],["The Department of State assigns an agent","州务厅指派了代理"],["The MLS lists the agent's name","MLS 上列出了代理名字"]],
+ x:["Agency can be created by conduct without any contract, which is why agents must clarify their role early.","没有合同，行为也能形成代理，所以代理必须尽早讲清自己的角色。"],
+ k:"行为也能形成代理"}
+);
+
+CARDS.push(
+/* ---- v13: Commercial and Investment Properties (10 of 77 syllabus hours) ---- */
+{t:"comm",
+ q:["A lease in which the landlord pays the building's taxes, insurance, and operating costs out of the rent is a:","房东用租金支付房产税、保险和运营费用的租约是："],
+ a:["Gross lease","总租约（gross lease）"],
+ w:[["Triple-net lease","三净租约"],["Percentage lease","营业额分成租约"],["Ground lease","土地租约"]],
+ x:["The landlord builds the expected costs into the rent. Many office and residential leases work this way.","房东把预计的费用算进租金里，很多写字楼和住宅租约都是这样。"],
+ k:"Gross = 房东包费用"},
+{t:"comm",
+ q:["In a modified gross lease, operating costs are:","在修正总租约中，运营费用："],
+ a:["Shared between landlord and tenant as the lease says","按租约约定由房东和租户分担"],
+ w:[["Paid entirely by the tenant, including structural repairs","全部由租户付，包括结构维修"],["Paid entirely by the landlord","全部由房东付"],["Paid by the city","由市政府付"]],
+ x:["Common in offices: the tenant may pay its own electricity and cleaning while the landlord pays taxes and insurance.","写字楼常见：租户付自己的电费和清洁，房东付房产税和保险。"],
+ k:"Modified gross = 费用分摊"},
+{t:"comm",
+ q:["Under a double-net (NN) lease, the tenant pays rent plus:","在双净租约（NN）下，租户除租金外还付："],
+ a:["Property taxes and insurance","房产税和保险"],
+ w:[["Only utilities","只付水电"],["Nothing else","别的都不付"],["Utilities and structural repairs only","只付水电和结构维修"]],
+ x:["Single net = taxes; double net = taxes and insurance; triple net = taxes, insurance, and maintenance.","单净 = 税；双净 = 税 + 保险；三净 = 税 + 保险 + 维护。"],
+ k:"N=税 · NN=税+保险 · NNN=税+保险+维护"},
+{t:"comm",
+ q:["A tenant who even pays for structural repairs and a new roof, carrying nearly all ownership risk, has an:","连结构维修和换屋顶都由租户负担、几乎承担全部业主风险的租约是："],
+ a:["Absolute (bondable) net lease","绝对净租约"],
+ w:[["Gross lease","总租约"],["Modified gross lease","修正总租约"],["Index lease","指数租约"]],
+ x:["Often used for single-tenant buildings leased to strong national companies.","常用于整栋租给大型全国性公司的单一租户物业。"],
+ k:"Absolute net = 连结构都归租户"},
+{t:"comm",
+ q:["An owner-occupant sells its building to an investor and immediately leases it back. This is a:","业主自用的公司把楼卖给投资人，然后马上租回来。这叫："],
+ a:["Sale-leaseback","售后回租"],
+ w:[["Ground lease","土地租约"],["Sublease","转租"],["Wraparound mortgage","包裹式抵押"]],
+ x:["The seller frees up cash tied up in the building and stays in place; the buyer gets a long-term tenant.","卖方把压在楼里的资金套出来，照样在原地营业；买方得到一个长期租户。"],
+ k:"卖了再租回 = 套现"},
+{t:"comm",
+ q:["Before drafting a commercial lease, the parties often sign a short, usually non-binding summary of the key terms called a(n):","起草商业租约前，双方常先签一份简短、一般没有约束力的主要条款摘要，叫："],
+ a:["Letter of intent (LOI)","意向书（LOI）"],
+ w:[["Estoppel certificate","禁反言证明"],["Memorandum of lease","租约备忘录"],["Certificate of occupancy","入住证"]],
+ x:["The LOI covers rent, term, space, and concessions. The lease itself is the binding contract.","意向书写明租金、租期、面积和优惠条件；真正有约束力的是租约本身。"],
+ k:"LOI = 意向书，一般无约束力"},
+{t:"comm",
+ q:["Money a landlord provides for building out a commercial tenant's space is a(n):","房东为商业租户装修空间提供的资金叫："],
+ a:["Tenant improvement (TI) allowance","租户装修补贴（TI）"],
+ w:[["Rent abatement credited at lease signing","签约时抵扣的减租额"],["Rent escalation","租金递增"],["Expense stop","费用上限"]],
+ x:["TI allowances are usually quoted per square foot.","装修补贴通常按每平方英尺报价。"],
+ k:"TI = 装修补贴"},
+{t:"comm",
+ q:["A developer constructs a building to one tenant's specifications and then leases it to that tenant. This is:","开发商按某个租户的要求盖楼，然后租给这个租户。这叫："],
+ a:["Build-to-suit","定制建造（build-to-suit）"],
+ w:[["Sale-leaseback","售后回租"],["Ground lease","土地租约"],["Sublease","转租"]],
+ x:["Common for retailers and distribution users with special building needs.","常见于有特殊建筑需求的零售商和物流企业。"],
+ k:"按租户要求盖楼 = build-to-suit"},
+{t:"comm",
+ q:["An office lease includes 12 months of free rent. Compared with the face (asking) rent, the effective rent is:","一份写字楼租约给了 12 个月免租期。与标价租金相比，实际（有效）租金："],
+ a:["Lower","更低"],
+ w:[["Higher","更高"],["The same","一样"],["Impossible to compare","无法比较"]],
+ x:["Concessions such as free rent and TI allowances reduce the landlord's true income from the lease.","免租期、装修补贴等优惠都会降低房东从租约里实际拿到的收入。"],
+ k:"免租期 → 实际租金更低"},
+{t:"comm",
+ q:["In a NYC commercial lease, a 'good guy' guarantee makes the guarantor liable for rent:","纽约市商业租约中的「好人担保」（good guy guarantee）让担保人对租金负责到："],
+ a:["Only until the tenant moves out properly and returns the keys","租户按规定搬走并交回钥匙为止"],
+ w:[["For the full lease term no matter what","不论如何都到租约期满"],["Only for the first month","只负责第一个月"],["Never","完全不负责"]],
+ x:["If the tenant gives notice, pays through move-out, and leaves the space clean, the guarantor's liability ends.","只要租户提前通知、付清到搬走那天的租金、把空间清干净交还，担保责任就结束。"],
+ k:"Good guy = 好好交钥匙就免责"},
+{t:"comm",
+ q:["Instead of cash, a commercial tenant may provide its security deposit as a:","商业租户可以不交现金押金，而是提供："],
+ a:["Letter of credit","信用证"],
+ w:[["Mechanic's lien","施工留置权"],["Quitclaim deed","放弃权利契据"],["Estoppel certificate","禁反言证明"]],
+ x:["A bank's standby letter of credit lets the landlord draw the funds if the tenant defaults.","银行开的备用信用证，让房东在租户违约时可以提款。"],
+ k:"押金可用信用证"},
+{t:"comm",
+ q:["In NY, a landlord holding a tenant's security deposit, residential or commercial, must:","在纽约，房东收的押金（住宅或商业）必须："],
+ a:["Keep it separate as the tenant's money","作为租户的钱单独保管"],
+ w:[["Spend it on repairs as needed","需要时拿去维修"],["Put it in the landlord's operating account","存进房东的运营账户"],["Give it to the broker","交给经纪人"]],
+ x:["Under General Obligations Law §7-103, deposits remain the tenant's money and may not be commingled with the landlord's funds.","根据《一般义务法》§7-103，押金仍属于租户，不能和房东自己的钱混在一起。"],
+ k:"押金是租户的钱，不能混用"},
+{t:"comm",
+ q:["A retail lease clause promising that the landlord won't lease other space in the center to a competing business is an:","零售租约中，房东承诺不把商场其他铺位租给竞争对手的条款是："],
+ a:["Exclusive use clause","独家经营条款"],
+ w:[["Radius clause","半径条款"],["Recapture clause","收回条款"],["Relocation clause","迁移条款"]],
+ x:["A pizzeria may negotiate an exclusive so no other pizzeria opens in the same center.","比萨店可以谈独家条款，保证同一商场不再开别的比萨店。"],
+ k:"Exclusive = 不租给竞争对手"},
+{t:"comm",
+ q:["A retail lease clause forbidding the tenant from opening another store within 3 miles is a:","零售租约中禁止租户在 3 英里内再开分店的条款是："],
+ a:["Radius clause","半径条款"],
+ w:[["Exclusive use clause","独家经营条款"],["Kick-out clause","退出条款"],["Co-tenancy clause","共同租户条款"]],
+ x:["It keeps nearby stores from drawing sales away, which protects the landlord's percentage rent.","防止附近分店分走营业额，从而保护房东的分成租金。"],
+ k:"Radius = 方圆几里不能再开"},
+{t:"comm",
+ q:["A store's rent drops if the shopping center's anchor store closes. This is a:","商场主力店关门后，某店铺的租金就下调。这是："],
+ a:["Co-tenancy clause","共同租户条款"],
+ w:[["Recapture clause","收回条款"],["Holdover clause","逾期续住条款"],["Demising clause","出租条款"]],
+ x:["Smaller shops depend on the anchor's foot traffic.","小店依赖主力店带来的客流。"],
+ k:"Co-tenancy = 主力店走了可减租"},
+{t:"comm",
+ q:["A clause letting the landlord take back the space when the tenant asks to sublet it is a:","租户申请转租时，房东可以把这块空间收回的条款是："],
+ a:["Recapture clause","收回条款"],
+ w:[["Radius clause","半径条款"],["Escalation clause","递增条款"],["Use clause","用途条款"]],
+ x:["Instead of approving the sublease, the landlord may end the lease for that space.","房东可以不批转租，而是直接终止这部分空间的租约。"],
+ k:"Recapture = 收回空间"},
+{t:"comm",
+ q:["A clause allowing the landlord to move the tenant to comparable space in the same building is a:","允许房东把租户搬到同楼类似空间的条款是："],
+ a:["Relocation clause","迁移条款"],
+ w:[["Recapture clause","收回条款"],["Exclusive use clause","独家经营条款"],["Attornment clause","承认新业主条款"]],
+ x:["Tenants usually negotiate that the landlord pays the moving and build-out costs.","租户通常会要求房东承担搬迁和装修费用。"],
+ k:"Relocation = 换位置"},
+{t:"comm",
+ q:["A retail lease lets either party end the lease if the tenant's sales stay below a set level. This is a:","零售租约约定：租户营业额一直低于某个水平时，任何一方都可以终止租约。这是："],
+ a:["Kick-out clause","退出条款"],
+ w:[["Radius clause","半径条款"],["Percentage clause","分成条款"],["Recapture clause","收回条款"]],
+ x:["It protects both sides when a location underperforms.","店址表现不佳时，这个条款保护双方。"],
+ k:"Kick-out = 业绩不达标可退出"},
+{t:"comm",
+ q:["A commercial lease bars assignment or subletting without the landlord's consent, 'which shall not be unreasonably withheld.' The landlord:","商业租约规定未经房东同意不得转让或转租，「房东不得无理拒绝」。房东："],
+ a:["Needs a good business reason to refuse","拒绝时要有合理的商业理由"],
+ w:[["May refuse for any reason at all, or no reason","可以任意拒绝，甚至不给理由"],["Must approve every request","必须批准所有申请"],["Has no say at all","完全没有发言权"]],
+ x:["Without that phrase, a NY commercial landlord can generally refuse consent for any reason.","如果没有这句话，纽约商业房东一般可以任意拒绝。"],
+ k:"写了「不得无理拒绝」→ 要有理由"},
+{t:"comm",
+ q:["A NY store tenant claims the landlord breached the 'warranty of habitability.' This warranty:","纽约一家店铺租户声称房东违反了「适住性保证」。这项保证："],
+ a:["Applies only to residential leases","只适用于住宅租约"],
+ w:[["Applies to every lease, residential or commercial","适用于所有租约，住宅商业都算"],["Applies only to retail space","只适用于零售空间"],["Applies only in NYC","只在纽约市适用"]],
+ x:["RPL §235-b protects residential tenants. Commercial tenants rely on the terms of their lease.","RPL §235-b 保护的是住宅租户；商业租户要靠租约条款。"],
+ k:"适住性保证只保护住宅"},
+{t:"comm",
+ q:["A lease clause passing on to the tenant its share of real estate tax increases over the base year is a:","把超过基准年的房产税涨幅按比例转嫁给租户的条款是："],
+ a:["Tax escalation clause","税费递增条款"],
+ w:[["Expense stop","费用上限"],["Percentage clause","分成条款"],["Recapture clause","收回条款"]],
+ x:["The tenant pays its proportionate share of taxes above the base-year amount.","租户按比例分担超过基准年金额的那部分税。"],
+ k:"税涨了按比例转嫁"},
+{t:"comm",
+ q:["Which tenant is most likely to sign a percentage lease?","哪种租户最可能签营业额分成租约？"],
+ a:["A retail store","零售店"],
+ w:[["A warehouse user","仓库租户"],["A law office","律师事务所"],["An apartment renter","公寓租客"]],
+ x:["Percentage rent ties part of the landlord's income to the store's sales.","分成租金把房东的部分收入和店铺营业额挂钩。"],
+ k:"按营业额分成 → 零售"},
+{t:"comm",
+ q:["Compared with residential leases, commercial leases typically:","和住宅租约相比，商业租约通常："],
+ a:["Run longer and have more negotiated terms","租期更长，可谈判的条款更多"],
+ w:[["Are always month-to-month","都是按月租"],["Can never be assigned or sublet by the tenant","租户永远不能转让或转租"],["Must be under 1 year","必须少于 1 年"]],
+ x:["Terms of 5 to 10 years or more, escalations, and custom clauses are common, and fewer statutory protections apply.","5 到 10 年以上的租期、租金递增和定制条款都很常见，法律保护也比住宅少。"],
+ k:"商业租约：长 + 可谈"},
+{t:"comm",
+ q:["A commercial broker's leasing commission is often calculated as a percentage of:","商业经纪人的租赁佣金通常按什么的百分比计算？"],
+ a:["The total rent over the lease term","整个租期的租金总额"],
+ w:[["The building's current market value at signing","签约时整栋楼的市值"],["The first month's rent only","只按第一个月租金"],["The tenant's annual sales","租户的年营业额"]],
+ x:["For example, a percentage of the aggregate rent for the whole term, sometimes paid in installments.","例如按整个租期租金总额的一定比例收取，有时分期支付。"],
+ k:"租赁佣金 = 总租金 × %"},
+{t:"comm",
+ q:["An office building has a load factor of 1.20. This means rentable area is:","一栋写字楼的公摊系数（load factor）是 1.20，意思是可租面积："],
+ a:["20% larger than usable area","比可用面积大 20%"],
+ w:[["20% smaller than usable area","比可用面积小 20%"],["Equal to usable area","等于可用面积"],["20% of the whole building","是整栋楼的 20%"]],
+ x:["Usable area × 1.20 = rentable area, because tenants pay for a share of lobbies, corridors, and other common areas.","可用面积 × 1.20 = 可租面积，因为租户要分摊大堂、走廊等公共区域。"],
+ k:"Load factor = 可租 ÷ 可用"},
+{t:"comm",
+ q:["The standard methods for measuring rentable and usable office space are published by:","测量写字楼可租面积和可用面积的标准由谁发布？"],
+ a:["BOMA","BOMA（楼宇业主与管理者协会）"],
+ w:[["HUD","美国住房与城市发展部"],["FEMA","联邦应急管理局"],["The Department of State","州务厅"]],
+ x:["The Building Owners and Managers Association publishes the measurement standards landlords and brokers use.","楼宇业主与管理者协会（BOMA）发布房东和经纪人使用的测量标准。"],
+ k:"量面积看 BOMA"},
+{t:"comm",
+ q:["The newest, best-located office buildings with top amenities and the highest rents are classified as:","最新、地段最好、配套最好、租金最高的写字楼属于："],
+ a:["Class A","A 级"],
+ w:[["Class B","B 级"],["Class C","C 级"],["Class D","D 级"]],
+ x:["Class B and C buildings are older or less well located and rent for less.","B 级和 C 级楼较旧或地段较差，租金也更低。"],
+ k:"A 级 = 最好"},
+{t:"comm",
+ q:["A shopping center anchored by a discount department store, larger than a neighborhood center, is a:","以折扣百货为主力店、比社区邻里中心大的购物中心是："],
+ a:["Community shopping center","社区购物中心"],
+ w:[["Strip center","小型街边商铺"],["Regional mall","区域商场"],["Outlet mall","奥特莱斯"]],
+ x:["Neighborhood center = grocery anchor; community center = discount department store; regional mall = full department stores.","邻里中心 = 超市当家；社区中心 = 折扣百货；区域商场 = 大型百货。"],
+ k:"社区中心 = 折扣百货"},
+{t:"comm",
+ q:["A center made up mostly of several big-box category retailers is a:","主要由几家大型专业卖场组成的购物中心是："],
+ a:["Power center","大卖场中心（power center）"],
+ w:[["Neighborhood center","邻里中心"],["Lifestyle center","生活方式中心"],["Strip center","小型街边商铺"]],
+ x:["Think of several big-box stores sharing one large parking field.","想象几家大卖场共用一个大停车场。"],
+ k:"多个大卖场 = power center"},
+{t:"comm",
+ q:["The large, well-known store that draws shoppers to a center is the:","把顾客吸引到商场的大型知名商店叫："],
+ a:["Anchor tenant","主力租户"],
+ w:[["Satellite tenant","卫星租户"],["Subtenant","次租户"],["Holdover tenant","逾期租户"]],
+ x:["Smaller in-line or satellite tenants rely on the anchor's traffic.","小型店铺依靠主力店带来的客流。"],
+ k:"Anchor = 引流主力店"},
+{t:"comm",
+ q:["Industrial space that combines offices with warehouse or light-manufacturing area is:","把办公和仓储或轻工业空间结合在一起的工业物业是："],
+ a:["Flex space","弹性空间（flex space）"],
+ w:[["Class A office","A 级写字楼"],["Strip retail","街边零售"],["Mixed-use residential","住商混合"]],
+ x:["Flex buildings suit tech, showroom, and light-assembly users.","弹性空间适合科技、展厅和轻型组装企业。"],
+ k:"Flex = 办公 + 仓库"},
+{t:"comm",
+ q:["For a modern distribution warehouse, tenants look most closely at:","现代物流仓库的租户最看重："],
+ a:["Ceiling clear height and loading docks","净高和装卸平台"],
+ w:[["Fireplaces and views","壁炉和景观"],["Street-level retail frontage","临街零售门面"],["Many small private offices and conference rooms","很多小办公室和会议室"]],
+ x:["Clear height, dock doors, truck courts, and highway access drive warehouse value.","净高、装卸门、卡车场地和靠近高速公路决定仓库价值。"],
+ k:"仓库看层高和装卸口"},
+{t:"comm",
+ q:["A building with stores on the ground floor and apartments above is:","一楼是商铺、楼上是公寓的建筑属于："],
+ a:["Mixed-use","住商混合用途"],
+ w:[["Industrial","工业用途"],["Special-purpose","特殊用途"],["Flex","弹性空间"]],
+ x:["Zoning must permit both uses.","分区规定必须允许这两种用途。"],
+ k:"楼下商铺楼上住 = mixed-use"},
+{t:"comm",
+ q:["Positive leverage occurs when a property's return (its cap rate) is:","正杠杆是指物业的回报率（资本化率）："],
+ a:["Higher than the cost of the borrowed money","高于借款成本"],
+ w:[["Lower than the interest rate on the borrowed money","低于借款的利率"],["Exactly zero","正好为零"],["Higher than the vacancy rate","高于空置率"]],
+ x:["Borrowing at 5% to buy a property earning 7% boosts the investor's return on cash.","以 5% 借钱买回报 7% 的物业，可以提高投资者自有资金的回报。"],
+ k:"回报率 > 借钱成本 = 正杠杆"},
+{t:"comm",
+ q:["A property earns 4% but the loan costs 6%. Borrowing more will:","物业回报 4%，贷款成本 6%。多借钱会："],
+ a:["Lower the investor's return on cash","降低投资者自有资金的回报"],
+ w:[["Raise the return on cash","提高自有资金回报"],["Leave the return unchanged","不影响回报"],["Remove the risk of the investment entirely","完全消除投资风险"]],
+ x:["This is negative leverage: each borrowed dollar costs more than it earns.","这是负杠杆：每借一美元，成本都高于它赚到的钱。"],
+ k:"回报率 < 借钱成本 = 负杠杆"},
+{t:"comm",
+ q:["Unlike a gross rent multiplier for homes, a gross income multiplier (GIM) for commercial property usually uses:","与住宅常用的总租金乘数不同，商业物业的总收入乘数（GIM）通常用："],
+ a:["Annual gross income","年总收入"],
+ w:[["Monthly rent","月租金"],["Net operating income","净营业收入"],["Annual debt service","年还贷额"]],
+ x:["GRM often uses monthly rent for houses; GIM uses annual gross income, which can include income other than rent.","住宅的 GRM 常用月租金；GIM 用年总收入，可以包括租金以外的收入。"],
+ k:"GIM = 年总收入"},
+{t:"comm",
+ q:["Lenders check whether a property's NOI covers its loan payments using the:","贷款方用什么指标检查物业的 NOI 能否覆盖还款？"],
+ a:["Debt service coverage ratio (DSCR)","偿债覆盖率（DSCR）"],
+ w:[["Loan-to-value ratio","贷款价值比"],["Gross rent multiplier","总租金乘数"],["Load factor","公摊系数"]],
+ x:["DSCR = NOI ÷ annual debt service. Lenders often want about 1.2 to 1.25 or more.","DSCR = NOI ÷ 年还贷额，贷款方通常要求约 1.2–1.25 以上。"],
+ k:"DSCR = NOI ÷ 还贷"},
+{t:"comm",
+ q:["NOI is $120,000 and annual debt service is $100,000. The debt service coverage ratio is:","NOI 是 12 万，年还贷 10 万。偿债覆盖率是："],
+ a:["1.2","1.2"],
+ w:[["0.83","0.83"],["2.2","2.2"],["12%","12%"]],
+ x:["$120,000 ÷ $100,000 = 1.2, meaning NOI is 1.2 times the loan payments.","120,000 ÷ 100,000 = 1.2，即 NOI 是还贷额的 1.2 倍。"],
+ k:"NOI ÷ 还贷 = 1.2"},
+{t:"comm",
+ q:["Besides cash flow, appreciation, and equity buildup, investors in income property benefit from:","除了现金流、升值和还本累积净值，收益型物业投资者还能获得："],
+ a:["Tax benefits such as depreciation","折旧等税务好处"],
+ w:[["Interest on escrow deposits","托管存款的利息"],["Commission rebates","佣金返还"],["Guaranteed rezoning to a more valuable use","保证改成更值钱的分区"]],
+ x:["Depreciation and other deductions can shelter part of the income from tax.","折旧和其他扣除可以让部分收入免于缴税。"],
+ k:"四种回报：现金流 · 升值 · 还本 · 税务"},
+{t:"comm",
+ q:["A company that owns income-producing real estate, sells shares to investors, and must distribute most of its taxable income is a:","拥有收益型房地产、向投资者出售股份、必须把大部分应税收入分配出去的公司是："],
+ a:["REIT","房地产投资信托（REIT）"],
+ w:[["Syndicate","辛迪加"],["Joint venture","合资"],["Land trust","土地信托"]],
+ x:["A REIT must pay out at least 90% of its taxable income as dividends to keep its tax status.","REIT 必须把至少 90% 的应税收入作为股息分配，才能保持税务资格。"],
+ k:"REIT：90% 分红"},
+{t:"comm",
+ q:["The rate of return that makes the present value of all future cash flows equal the amount invested is the:","使所有未来现金流的现值等于投资额的回报率是："],
+ a:["Internal rate of return (IRR)","内部收益率（IRR）"],
+ w:[["Capitalization rate","资本化率"],["Cash-on-cash return","现金回报率"],["Loan constant","贷款常数"]],
+ x:["IRR accounts for the timing of every cash flow, including the final sale.","IRR 考虑了每笔现金流的时间，包括最后出售的收入。"],
+ k:"IRR = 考虑时间的总回报率"},
+{t:"comm",
+ q:["Before buying an office building, the buyer reviews leases, the rent roll, tenant estoppels, and an environmental report. This is:","买写字楼之前，买家审查租约、租金清单、租户禁反言证明和环境报告。这叫："],
+ a:["Due diligence","尽职调查"],
+ w:[["Escrow","托管"],["Attornment","承认新业主"],["Reconciliation","估价调和"]],
+ x:["Due diligence verifies income, expenses, and risks before the buyer is committed.","尽职调查是在买家正式承诺之前核实收入、费用和风险。"],
+ k:"买前尽调"},
+{t:"comm",
+ q:["Before lending on a commercial property, a lender usually requires a records-and-site review for contamination called a:","贷款给商业物业之前，贷款方通常要求做一份检查污染的资料和现场审查，叫："],
+ a:["Phase I environmental site assessment","第一阶段环境场地评估"],
+ w:[["Certificate of occupancy","入住证"],["Abstract of title","产权摘要"],["Appraisal review","估价复核"]],
+ x:["A Phase I helps a buyer qualify for the 'innocent landowner' defense under the federal Superfund law (CERCLA).","第一阶段评估可以帮助买家获得联邦超级基金法（CERCLA）下的「无辜业主」抗辩。"],
+ k:"Phase I = 环境尽调"},
+{t:"comm",
+ q:["The rate at which available space is leased up in a market over a period is the:","一个市场在一段时间内空置面积被租出去的速度叫："],
+ a:["Absorption rate","去化率（absorption rate）"],
+ w:[["Capitalization rate","资本化率"],["Vacancy factor","空置系数"],["Load factor","公摊系数"]],
+ x:["A high absorption rate signals strong demand for space.","去化率高表示对空间的需求强。"],
+ k:"Absorption = 去化速度"},
+{t:"comm",
+ q:["A property reaches break-even occupancy when its income covers:","物业达到保本出租率，是指收入能覆盖："],
+ a:["Operating expenses plus debt service","运营费用加还贷"],
+ w:[["Only property taxes","只有房产税"],["Only the down payment","只有首付"],["Only the broker's commission and closing costs","只有经纪佣金和过户费"]],
+ x:["Below break-even, the owner must add cash each month.","低于保本点，业主每月都得自己贴钱。"],
+ k:"保本：收入 = 费用 + 还贷"},
+{t:"comm",
+ q:["The biggest risk in owning a building net-leased to a single tenant is:","拥有一栋整租给单一租户的净租约物业，最大的风险是："],
+ a:["The tenant's credit and whether it renews","租户的信用以及是否续租"],
+ w:[["Too many tenants to manage","租户太多难管"],["High day-to-day management costs for many tenants","多租户带来的高额日常管理费"],["Rent stabilization rules","租金稳定法规"]],
+ x:["All of the income depends on one tenant, so a default or move-out leaves the building empty.","全部收入都靠一个租户，一旦违约或搬走，整栋楼就空了。"],
+ k:"单一租户 → 信用风险"},
+{t:"comm",
+ q:["In a real estate syndication, the sponsor who manages the investment is usually the:","在房地产辛迪加中，负责管理投资的发起人通常是："],
+ a:["General partner","普通合伙人"],
+ w:[["Limited partner","有限合伙人"],["Mortgagee","抵押权人"],["Trustee","受托人"]],
+ x:["Limited partners supply money and have limited liability but no management role.","有限合伙人出钱、承担有限责任，但不参与管理。"],
+ k:"GP 管事，LP 出钱"},
+{t:"comm",
+ q:["Market cap rates fall from 6% to 5% while a building's NOI stays the same. Its value:","市场资本化率从 6% 降到 5%，某楼的 NOI 不变。它的价值："],
+ a:["Rises","上升"],
+ w:[["Falls","下降"],["Stays the same","不变"],["Can't be estimated","无法估计"]],
+ x:["Value = NOI ÷ cap rate, so a smaller divisor gives a larger value.","价值 = NOI ÷ 资本化率，除数变小，价值就变大。"],
+ k:"Cap rate 降 → 价值涨"}
+);
+
+CARDS.push(
+/* ---- v13: Property Management (2 h), Property Insurance (1 h), Licensee Safety (1 h) ---- */
+{t:"comm",
+ q:["The contract between a building owner and a property manager is the:","业主和物业经理之间的合同叫："],
+ a:["Management agreement","物业管理协议"],
+ w:[["Listing agreement","挂牌协议"],["Estoppel certificate","禁反言证明"],["Proprietary lease","专有租约"]],
+ x:["It sets out the manager's duties, authority, fee, reporting, and term.","协议写明经理的职责、权限、费用、报告要求和期限。"],
+ k:"物业管理协议"},
+{t:"comm",
+ q:["A property manager's main goal under a management agreement is to:","物业经理在管理协议下的主要目标是："],
+ a:["Meet the owner's objectives for the property","实现业主对物业的目标"],
+ w:[["Maximize the manager's own fee and leasing commissions","让自己的管理费和招租佣金最大化"],["Keep units empty for renovation","让单元空着等装修"],["Cut rents to fill every unit","降租金把每个单元租满"]],
+ x:["Usually that means maximizing net income while preserving the property's value.","通常就是在保住物业价值的同时，把净收入做到最大。"],
+ k:"首要：实现业主目标"},
+{t:"comm",
+ q:["A property manager sends the owner a regular report of income, expenses, and vacancies called an:","物业经理定期给业主寄的收入、费用和空置报告叫："],
+ a:["Operating statement","经营报表"],
+ w:[["Abstract of title","产权摘要"],["Closing statement","过户结算单"],["Offering plan","招售计划"]],
+ x:["Usually monthly. The manager must account for every dollar collected and spent.","通常每月一次，经理要对每一笔收支负责。"],
+ k:"定期经营报表"},
+{t:"comm",
+ q:["For a property manager, keeping current tenants is usually:","对物业经理来说，留住现有租客通常："],
+ a:["Cheaper than finding new ones","比找新租客便宜"],
+ w:[["More expensive than finding new ones","比找新租客贵"],["The same cost as finding new ones","和找新租客成本一样"],["Not the manager's concern","不关经理的事"]],
+ x:["Turnover brings vacancy, cleaning, repairs, and leasing costs.","租客流动会带来空置、清洁、维修和招租成本。"],
+ k:"留住租客更省钱"},
+{t:"comm",
+ q:["Cleaning hallways, landscaping, and other day-to-day upkeep are:","打扫走廊、园艺等日常维护属于："],
+ a:["Routine maintenance","日常维护"],
+ w:[["Capital improvements","资本改良"],["Corrective maintenance","纠正性维护"],["Deferred maintenance","延期维护"]],
+ x:["Preventive maintenance avoids breakdowns; corrective fixes what broke; routine is regular upkeep.","预防性维护是防故障，纠正性维护是修坏掉的东西，日常维护是定期打理。"],
+ k:"日常打理 = routine"},
+{t:"comm",
+ q:["In NYC, the yearly lease-renewal increases for rent-stabilized apartments are set by the:","在纽约市，租金稳定公寓每年的续约涨幅由谁决定？"],
+ a:["Rent Guidelines Board","租金指导委员会"],
+ w:[["Department of State","州务厅"],["Landlord alone","房东自己"],["City Council each month","市议会每月决定"]],
+ x:["The Rent Guidelines Board votes each year on allowable increases for 1- and 2-year renewal leases.","租金指导委员会每年投票决定 1 年和 2 年续约的允许涨幅。"],
+ k:"稳租涨幅由 RGB 定"},
+{t:"comm",
+ q:["The state agency that administers rent stabilization and rent control in NY is:","在纽约负责管理租金稳定和租金管制的州机构是："],
+ a:["DHCR (Homes and Community Renewal)","住房与社区更新署（DHCR）"],
+ w:[["Department of State","州务厅"],["DEC","环境保护署"],["HUD","美国住房与城市发展部"]],
+ x:["Tenants file rent overcharge and service complaints with DHCR.","租客向 DHCR 投诉多收租金或服务问题。"],
+ k:"租金管制归 DHCR"},
+{t:"comm",
+ q:["Outside NYC, the Emergency Tenant Protection Act (ETPA) can bring rent stabilization to:","在纽约市以外，《紧急租客保护法》（ETPA）可以把租金稳定扩展到："],
+ a:["Buildings of 6+ units built before 1974, where the locality opts in","1974 年前建成、6 户以上、且当地选择加入的楼"],
+ w:[["Any single-family home","任何独栋住宅"],["Only buildings built after 2000","只限 2000 年后的新楼"],["Only commercial buildings","只限商业楼"]],
+ x:["A locality with a housing emergency (low vacancy) may adopt the ETPA; the 2019 law let any municipality in the state do so.","住房紧急（空置率低）的地方可以采用 ETPA；2019 年的法律允许全州任何城镇这样做。"],
+ k:"ETPA：6 户以上 · 1974 年前 · 地方加入"},
+{t:"comm",
+ q:["Rent control in NYC, as opposed to rent stabilization, generally covers:","纽约市的租金管制（不是租金稳定）一般适用于："],
+ a:["Tenants in pre-1947 buildings who have lived there since before July 1971","1947 年前建成的楼里、1971 年 7 月前就住进去的租客"],
+ w:[["Every apartment built after 1974","1974 年后建的所有公寓"],["Any apartment renting for over $2,000","月租超过 2,000 的公寓"],["All condo units","所有共管公寓"]],
+ x:["Rent control is rare today; most regulated NYC apartments are rent-stabilized.","租金管制现在很少见，纽约市大多数受管制公寓是租金稳定。"],
+ k:"Rent control：1947 年前的楼 · 1971 年前入住"},
+{t:"comm",
+ q:["Under NY law since 2019, a landlord who won't renew a lease, or plans a rent increase of 5% or more, must give a tenant of more than 2 years at least:","根据纽约 2019 年起的法律，房东不续约或打算涨租 5% 以上，对住了 2 年以上的租客至少要提前："],
+ a:["90 days' notice","90 天通知"],
+ w:[["30 days' notice","30 天通知"],["60 days' notice","60 天通知"],["14 days' notice","14 天通知"]],
+ x:["30 days for tenancies under 1 year, 60 days for 1 to 2 years, 90 days for over 2 years (RPL §226-c).","住不到 1 年提前 30 天，1–2 年 60 天，2 年以上 90 天（RPL §226-c）。"],
+ k:"<1 年 30 天 · 1–2 年 60 天 · >2 年 90 天"},
+{t:"comm",
+ q:["In NY, a landlord who receives rent in cash must:","在纽约，房东收现金房租时必须："],
+ a:["Give the tenant a written receipt","给租客书面收据"],
+ w:[["Refuse the payment","拒收"],["Deposit it in the broker's escrow","存进经纪人托管账户"],["Report it to the Department of State","报告州务厅"]],
+ x:["RPL §235-e requires a written receipt for rent paid in cash or by anything other than the tenant's personal check.","RPL §235-e 规定，用现金或租客个人支票以外的方式付租，房东都要开书面收据。"],
+ k:"收现金要给收据"},
+{t:"comm",
+ q:["In NYC, a landlord must install window guards when:","在纽约市，房东在什么情况下必须安装窗户护栏？"],
+ a:["A child 10 or younger lives in the apartment","公寓里住着 10 岁或以下的孩子"],
+ w:[["The building has an elevator and more than six floors","楼里有电梯且超过六层"],["The apartment is sublet","公寓是转租的"],["The tenant has a pet","租客养宠物"]],
+ x:["The NYC Health Code requires guards where a child 10 or under lives, or whenever a tenant asks, except on windows to a fire escape.","纽约市卫生法规定：住着 10 岁或以下孩子、或租客提出要求时，都要装护栏，通往消防梯的窗户除外。"],
+ k:"有 10 岁以下孩子 → 装窗户护栏"},
+{t:"comm",
+ q:["Under NY's Amanda's Law, carbon monoxide alarms are required in:","根据纽约《阿曼达法》，哪些住宅必须装一氧化碳报警器？"],
+ a:["Homes with fuel-burning appliances or an attached garage","有燃料燃烧设备或附属车库的住宅"],
+ w:[["Only commercial buildings","只有商业楼"],["Only new homes in NYC","只有纽约市的新房"],["No homes; they're optional","都不用，自愿安装"]],
+ x:["The 2010 law covers residences with fossil-fuel heat, appliances, or fireplaces, or an attached garage.","这部 2010 年的法律适用于有化石燃料供暖、电器、壁炉或附属车库的住宅。"],
+ k:"Amanda's Law = 一氧化碳报警器"},
+{t:"comm",
+ q:["A NY landlord's court case to evict a tenant and recover the apartment is a:","纽约房东向法院起诉驱逐租客、收回房子的程序叫："],
+ a:["Summary proceeding","简易程序（summary proceeding）"],
+ w:[["Quiet title action","确权诉讼"],["Partition action","分割诉讼"],["Article 78 proceeding","第 78 条诉讼"]],
+ x:["Evictions go through Housing, City, or District Court. Changing the locks or removing belongings yourself is illegal.","驱逐要走住房法院、市或区法院；自己换锁或搬东西是违法的。"],
+ k:"驱逐走 summary proceeding"},
+{t:"comm",
+ q:["New York City's Local Law 97 limits:","纽约市《第 97 号地方法》限制的是："],
+ a:["Greenhouse gas emissions from large buildings","大型建筑的温室气体排放"],
+ w:[["Yearly rent increases on rent-stabilized apartments","租金稳定公寓的年度涨租"],["Building heights in Manhattan","曼哈顿的楼高"],["Broker fees on rentals","租房经纪费"]],
+ x:["It applies mainly to buildings over 25,000 sq ft, with emissions caps that began in 2024 and fines for going over.","主要适用于 25,000 平方英尺以上的楼，排放上限从 2024 年开始，超标要罚款。"],
+ k:"LL97 = 大楼碳排放上限"},
+{t:"comm",
+ q:["A property manager can best reduce liability for injuries in common areas by:","物业经理减少公共区域伤害责任的最好办法是："],
+ a:["Regular inspections and prompt repairs","定期检查、及时维修"],
+ w:[["Avoiding written records","不留书面记录"],["Ignoring tenant complaints until they're in writing","租客没书面投诉就不理"],["Closing the lobby","把大堂关掉"]],
+ x:["Documented inspections and quick repairs control the risk; insurance transfers what remains.","有记录的检查和及时维修可以控制风险，剩下的风险用保险转移。"],
+ k:"勤检查快修 + 保险"},
+{t:"comm",
+ q:["A commercial owner protects against claims that a visitor was hurt on the premises with:","商业业主防范访客在物业里受伤索赔，靠的是："],
+ a:["Commercial general liability (CGL) insurance","商业综合责任险（CGL）"],
+ w:[["Title insurance","产权保险"],["Builder's risk insurance","在建工程险"],["Flood insurance","洪水险"]],
+ x:["CGL covers third-party bodily injury and property damage claims.","CGL 承保第三方人身伤害和财产损失索赔。"],
+ k:"CGL = 商业综合责任险"},
+{t:"comm",
+ q:["A fire closes an office building for months. Coverage that replaces the lost rent is:","一场火灾让写字楼停用几个月。赔偿租金损失的保险是："],
+ a:["Rent loss (business income) insurance","租金损失（营业收入）险"],
+ w:[["Umbrella liability insurance","伞式责任险"],["Title insurance","产权保险"],["Private mortgage insurance","私人贷款保险"]],
+ x:["Business income or rent-loss coverage pays lost income while the building is repaired.","营业收入或租金损失险在修复期间赔偿损失的收入。"],
+ k:"停业期间租金损失险"},
+{t:"comm",
+ q:["A policy that covers every cause of loss except those it specifically excludes is:","除明确排除的原因外，所有损失原因都承保的保单是："],
+ a:["Open perils (special form)","开放式风险（特别形式）"],
+ w:[["Named perils","列明风险"],["Basic form","基本形式"],["A coinsurance policy","共保保单"]],
+ x:["A named-perils policy covers only the causes it lists, such as fire or windstorm.","列明风险保单只承保列出的原因，比如火灾或风暴。"],
+ k:"除了列出的都保 = open perils"},
+{t:"comm",
+ q:["Replacement cost coverage pays to:","重置成本保险赔付的是："],
+ a:["Rebuild or replace without deducting depreciation","重建或更换，不扣折旧"],
+ w:[["Cover the land's market value","土地的市场价值"],["Refund the original purchase price of the building","退还当初买楼的价格"],["Pay actual cash value only","只赔实际现金价值"]],
+ x:["Actual cash value subtracts depreciation; replacement cost does not.","实际现金价值要扣折旧，重置成本不扣。"],
+ k:"重置成本不扣折旧"},
+{t:"comm",
+ q:["A NY building owner who employs a superintendent must carry:","雇了大楼管理员的纽约业主必须投保："],
+ a:["Workers' compensation insurance","工伤保险"],
+ w:[["Title insurance","产权保险"],["Private mortgage insurance","私人贷款保险"],["Flood insurance","洪水险"]],
+ x:["NY requires most employers to carry workers' compensation and disability benefits coverage.","纽约要求大多数雇主投保工伤险和残障津贴险。"],
+ k:"雇员工 → 工伤险"},
+{t:"comm",
+ q:["A new National Flood Insurance Program policy generally takes effect after a waiting period of:","新买的国家洪水保险计划（NFIP）保单，一般要等多久才生效？"],
+ a:["30 days","30 天"],
+ w:[["1 day","1 天"],["90 days","90 天"],["1 year","1 年"]],
+ x:["One common exception: a policy bought at closing because a new loan requires it starts right away.","常见例外：因新贷款要求而在过户时买的保单立即生效。"],
+ k:"洪水险 30 天等待期"},
+{t:"comm",
+ q:["A federally backed lender requires flood insurance when the property is:","联邦支持的贷款方在什么情况下要求买洪水险？"],
+ a:["In a FEMA special flood hazard area","位于 FEMA 特别洪水危险区"],
+ w:[["Within 10 miles of the ocean or a major river","离海或大河 10 英里以内"],["Built before 1978","1978 年前建成"],["Owned by a corporation","由公司持有"]],
+ x:["The special flood hazard area is the '100-year floodplain' on FEMA's maps.","特别洪水危险区就是 FEMA 地图上的「百年一遇洪泛区」。"],
+ k:"SFHA + 联邦贷款 = 必须洪水险"},
+{t:"comm",
+ q:["After paying a claim, the insurer takes over the owner's right to sue whoever caused the loss. This is:","保险公司赔付后，取得了业主向肇事方追偿的权利。这叫："],
+ a:["Subrogation","代位求偿"],
+ w:[["Coinsurance","共保"],["Attornment","承认新业主"],["Novation","合同更新"]],
+ x:["For example, the insurer pays for fire damage, then sues the contractor whose work caused the fire.","例如保险公司赔了火灾损失，再去起诉引起火灾的承包商。"],
+ k:"Subrogation = 代位求偿"},
+{t:"comm",
+ q:["For property insurance, the insured must have an insurable interest:","财产保险中，被保险人必须在什么时候有可保利益？"],
+ a:["At the time of the loss","损失发生时"],
+ w:[["Only when the policy is bought","只在买保单时"],["Never","不需要"],["Only at the closing","只在过户时"]],
+ x:["You must have a financial stake in the property when it's damaged. (Life insurance differs: interest is needed when the policy is applied for.)","损失发生时你必须对房产有经济利益。（寿险不同：投保时要有可保利益。）"],
+ k:"财产险：出险时要有可保利益"},
+{t:"comm",
+ q:["Coverage that protects a building while it is under construction is:","建筑施工期间保护楼体的保险是："],
+ a:["Builder's risk insurance","在建工程险"],
+ w:[["Title insurance","产权保险"],["Umbrella liability insurance","伞式责任险"],["An HO-4 policy","HO-4 保单"]],
+ x:["It covers materials and the structure until the building is finished.","它承保材料和结构，直到完工。"],
+ k:"在建工程险"},
+{t:"comm",
+ q:["A brokerage protects itself from claims of negligent professional mistakes with:","经纪公司防范职业疏失索赔，靠的是："],
+ a:["Errors and omissions (E&O) insurance","职业责任险（E&O）"],
+ w:[["A fidelity bond","忠诚保证"],["Builder's risk insurance","在建工程险"],["Flood insurance","洪水险"]],
+ x:["E&O covers negligence claims; it doesn't cover fraud or intentional wrongdoing.","E&O 承保过失索赔，不承保欺诈或故意违法。"],
+ k:"E&O = 职业责任险"},
+{t:"comm",
+ q:["The 'loss of use' part of a homeowners policy pays for:","房屋保险中的「无法使用损失」赔付的是："],
+ a:["Extra living costs while the home is repaired","修房期间额外的生活费用"],
+ w:[["The remaining mortgage balance after a total loss","全损后剩余的房贷余额"],["Property taxes","房产税"],["The broker's commission","经纪佣金"]],
+ x:["For example, a hotel or temporary rental after a covered fire.","例如投保范围内的火灾后，住酒店或临时租房的费用。"],
+ k:"Loss of use = 临时住宿费"},
+{t:"comm",
+ q:["Before showing a property to a new client, a safe practice is to:","第一次给新客户带看前，安全的做法是："],
+ a:["Copy the client's ID and share your schedule with the office","复印客户证件，并把行程告诉办公室"],
+ w:[["Meet alone at night to save time","晚上单独见面省时间"],["Keep your plans private","不告诉任何人行程"],["Leave your phone in the car","把手机留在车里"]],
+ x:["Tell a colleague where you'll be and when you expect to return.","告诉同事你去哪里、预计几点回来。"],
+ k:"看证件、报行程"},
+{t:"comm",
+ q:["Many brokerages agree on a 'distress code word' so an agent can:","很多经纪公司约定一个「求救暗号」，用来："],
+ a:["Ask for help without alerting the client","在不惊动客户的情况下求救"],
+ w:[["Open lockboxes","打开钥匙盒"],["Skip the agency disclosure","跳过代理披露"],["Advertise listings without the broker's name","不写经纪公司名字为房源打广告"]],
+ x:["A casual-sounding phrase on a phone call tells the office to send help.","在电话里说一句听起来很平常的话，办公室就知道要派人支援。"],
+ k:"暗号求救"},
+{t:"comm",
+ q:["When driving to a showing, a good safety habit is to:","开车去带看时，好的安全习惯是："],
+ a:["Drive your own car and park where you can't be blocked in","开自己的车，停在不会被堵住的地方"],
+ w:[["Ride in the client's car","坐客户的车"],["Park inside the garage","停进车库"],["Leave your keys with the client","把钥匙交给客户"]],
+ x:["Your own car, parked on the street facing out, lets you leave at any time.","开自己的车、停在路边方便驶离，随时都能走。"],
+ k:"自己开车，别被堵"},
+/* ---- v13: Income Tax Issues and Taxes & Assessments (6 h) ---- */
+{t:"tax",
+ q:["When a foreign person sells U.S. real estate, FIRPTA generally requires the buyer to withhold what share of the price?","外国人出售美国房产时，FIRPTA 一般要求买家预扣售价的多少？"],
+ a:["15%","15%"],
+ w:[["5%","5%"],["10%","10%"],["30%","30%"]],
+ x:["The amount goes to the IRS. Exceptions exist, such as some homes under $300,000 that the buyer will live in.","预扣款交给国税局。有例外，比如买家自住、价格低于 30 万的部分住宅。"],
+ k:"FIRPTA：外国卖家扣 15%"},
+{t:"tax",
+ q:["In New York City, 1–3 family homes are in property tax:","在纽约市，1–3 户住宅属于哪一类房产税？"],
+ a:["Class 1","第 1 类"],
+ w:[["Class 2","第 2 类"],["Class 3","第 3 类"],["Class 4","第 4 类"]],
+ x:["Class 2 = other residential (co-ops, condos, larger rentals); Class 3 = utilities; Class 4 = commercial.","第 2 类 = 其他住宅（合作公寓、共管公寓、大型出租楼）；第 3 类 = 公用事业；第 4 类 = 商业。"],
+ k:"NYC 税类：1 = 1–3 户 · 2 = 其他住宅 · 4 = 商业"},
+{t:"tax",
+ q:["A homeowner's federal itemized deduction for property taxes is:","房主在联邦税表上逐项扣除房产税时："],
+ a:["Subject to the cap on state and local tax (SALT) deductions","受州和地方税（SALT）扣除上限限制"],
+ w:[["Unlimited","没有上限"],["Not allowed for homeowners","房主不能扣"],["Allowed only for renters","只有租客能扣"]],
+ x:["Property taxes count toward the federal SALT cap together with state income tax. Check the current year's limit.","房产税和州所得税一起计入联邦 SALT 上限，具体额度要看当年规定。"],
+ k:"房产税扣除有 SALT 上限"},
+{t:"tax",
+ q:["A homeowner must sell after 1 year because of a job transfer. The home-sale exclusion is:","房主因为工作调动，住了 1 年就得卖房。自住房出售免税额："],
+ a:["Available in part (prorated)","可以按比例部分享受"],
+ w:[["Lost entirely","完全失去"],["Available in full, since the move wasn't voluntary","全额享受，因为搬家不是自愿的"],["Doubled","翻倍"]],
+ x:["A reduced exclusion applies when the move is for a job change, health, or certain unforeseen circumstances.","因为工作变动、健康或某些意外情况搬家，可以享受减额免税。"],
+ k:"工作调动 → 按比例减免"},
+{t:"tax",
+ q:["For the home-sale exclusion, the 2 years of ownership and use within the last 5 years:","自住房出售免税要求的「5 年内拥有并居住 2 年」："],
+ a:["Don't have to be consecutive","不需要连续"],
+ w:[["Must be the most recent 2 years","必须是最近 2 年"],["Must be consecutive","必须连续"],["Must include the year of sale","必须包括出售那一年"]],
+ x:["Any 24 months of ownership and use within the 5 years before the sale count.","出售前 5 年内，只要累计拥有并居住满 24 个月就算。"],
+ k:"5 年住满 2 年，不必连续"},
+{t:"tax",
+ q:["Since 2018, a Section 1031 like-kind exchange is available for:","从 2018 年起，1031 同类交换适用于："],
+ a:["Real property only","只限不动产"],
+ w:[["Real and personal property","不动产和动产"],["Stocks and bonds","股票和债券"],["Primary residences","自住房"]],
+ x:["The 2017 tax law ended 1031 exchanges of personal property such as equipment and vehicles.","2017 年税法取消了设备、车辆等动产的 1031 交换。"],
+ k:"1031 只限不动产"},
+{t:"tax",
+ q:["May a NY rental building be exchanged under Section 1031 for a rental building in Florida?","纽约的出租楼可以按 1031 交换佛罗里达的出租楼吗？"],
+ a:["Yes; U.S. investment real estate is like-kind","可以，美国境内的投资性不动产都算同类"],
+ w:[["No; both must be in the same state","不可以，必须在同一个州"],["Only with IRS approval","须经国税局批准"],["Only if the buildings are the same size and type","两栋楼大小和类型必须一样"]],
+ x:["'Like-kind' refers to the nature of the property (investment real estate), not its type, size, or location within the U.S.","「同类」是指物业性质（投资性不动产），不看类型、大小或在美国哪个州。"],
+ k:"美国境内投资不动产都同类"},
+{t:"tax",
+ q:["In a 1031 exchange, the gain that isn't taxed at the time of the exchange is:","在 1031 交换中，交换时没有缴税的收益："],
+ a:["Deferred, carried into the new property's basis","被递延，转入新物业的成本基础"],
+ w:[["Forgiven permanently","永久免除"],["Taxed only by NY State","只由纽约州征税"],["Added to the mortgage balance of the new property instead","改为加到新物业的房贷余额上"]],
+ x:["The new property's basis is reduced by the deferred gain, so tax comes due when it is finally sold.","新物业的成本基础会减去递延的收益，所以最后出售时还要缴税。"],
+ k:"1031 是递延，不是免税"},
+{t:"tax",
+ q:["A homeowner rents out her house for 10 days during a big event. Federal income tax on that rent is:","房主在一次大型活动期间把房子出租 10 天。这笔租金的联邦所得税："],
+ a:["Generally not owed (fewer than 15 days)","一般不用缴（少于 15 天）"],
+ w:[["Owed at a 50% rate","按 50% 缴"],["Owed as a short-term capital gain on the house","按房子的短期资本利得缴"],["Owed only in NYC","只在纽约市要缴"]],
+ x:["If a home is rented for fewer than 15 days in a year, the rent isn't reported as income.","房子一年出租少于 15 天，租金不用申报为收入。"],
+ k:"一年租不到 15 天免税"},
+{t:"tax",
+ q:["A new NY homeowner today receives the Basic STAR benefit as:","现在的纽约新房主以什么形式获得基本 STAR 福利？"],
+ a:["A STAR credit check from the state","州政府寄来的 STAR 抵免支票"],
+ w:[["A mortgage interest rebate","房贷利息返还"],["A sales tax refund","销售税退税"],["A federal income tax deduction for school taxes","联邦所得税的学校税扣除"]],
+ x:["Since 2016, new applicants register with the NYS Tax Department and get a credit check; the old STAR exemption is closed to new applicants.","从 2016 年起，新申请人向纽约州税务局登记，领取抵免支票；旧的 STAR 免税额不再接受新申请。"],
+ k:"新房主 STAR = 州政府寄支票"}
+);
+
 /* Shorter multiple-choice wording so the right answer isn't given away by being the longest option.
    s = short text shown as the correct option; w = replacement distractors. The full answer (a) still shows after answering. */
 const MC = {
@@ -7039,6 +7843,162 @@ Object.assign(MC, {
 987:{s:["Commingling","混用资金"]}
 });
 
+/* v13: realign the bank with the NY Department of State 77-hour salesperson syllabus.
+   Retired cards stay in place (so every other card keeps its number and saved progress) but are hidden everywhere.
+   Keys are the exact English question text. */
+(function(){
+  var RETIRE = [
+ "A NY salesperson license is valid for how long?",
+ "The four elements of value are:",
+ "Appraised value $500,000, loan $425,000. What is the LTV, and is PMI likely?",
+ "A home bought for $400,000 sells for $460,000. The appreciation is:",
+ "A $240,000 loan at 6% interest. The first month's interest is:",
+ "An executor sells a house as directed by a will. The executor:",
+ "What is the DOS fee to change the name or address on a salesperson license?",
+ "A nonresident broker licensed in NY files an irrevocable consent, which:",
+ "A multiple listing service (MLS) is:",
+ "The broker must supervise salespersons under DOS regulation:",
+ "The physical characteristics of land are:",
+ "'Location, location, location' reflects which economic characteristic?",
+ "A flood suddenly tears away part of a lot. This sudden loss is:",
+ "A church, school, or hospital is classified as:",
+ "Which lien is voluntary?",
+ "A court order that seizes a defendant's property during a lawsuit to secure a possible judgment is a:",
+ "A right of way to cross a neighbor's land is a type of:",
+ "A subcontractor who installed windows and wasn't paid by the general contractor may:",
+ "Which is a general lien?",
+ "An easement in gross is usually held by:",
+ "A lien that the property owner did NOT agree to, like a tax lien, is:",
+ "An implied easement arises when:",
+ "The covenant in which the grantor agrees to sign any documents needed to fix title problems is:",
+ "Fixed objects like trees, rocks, or iron pins used as reference points in a description are:",
+ "The seller collected this month's rent from a tenant before closing mid-month. At closing:",
+ "A public land grant from the government to a private party is a:",
+ "Title insurance protects against:",
+ "A contract created by the parties' conduct rather than words is:",
+ "If the seller dies before accepting a buyer's offer, the offer:",
+ "'Love and affection' as consideration for a gift deed is called:",
+ "A court corrects a typo in a written contract to match what both parties actually agreed. This is:",
+ "In NY, the general statute of limitations for breach of contract is:",
+ "A buyer transfers her rights under a purchase contract to another buyer. This is:",
+ "A clause stating the written contract is the entire agreement between the parties is a:",
+ "Under an installment (land) contract, the buyer receives:",
+ "Sales of personal property, like furniture sold with a house, fall under the:",
+ "A lender agrees not to foreclose for a period while the borrower catches up. This is:",
+ "A lease is both a contract and a:",
+ "A study of a property's highest and best use that doesn't produce a value estimate is an:",
+ "The value of a property to a particular investor based on their own goals is:",
+ "Insurable value generally excludes:",
+ "Labor and materials used in construction are:",
+ "Architectural fees, permits, and financing during construction are:",
+ "The most expensive house on a block of modest homes tends to lose value. This is:",
+ "A modest house in a neighborhood of expensive homes benefits from:",
+ "Neighborhoods go through growth, stability, decline, and revitalization. This reflects the principle of:",
+ "Rising demand with limited supply generally causes prices to:",
+ "An appraisal's value is given as of:",
+ "Highest and best use 'as vacant' asks:",
+ "When valuing land in the cost approach, the appraiser uses:",
+ "A 40-year-old house that's been well maintained may have an effective age of 20. Effective age is:",
+ "Price is best defined as:",
+ "Market value assumes all EXCEPT:",
+ "A small 4-unit building rents for $8,000 a month in total, and the area GRM is 110. Estimated value is:",
+ "A $350,000 sale paid a $15,750 commission. What was the rate?",
+ "A room is 18 ft × 22 ft. Carpet costs $30 per square yard. The carpet costs:",
+ "A triangular lot has a 200 ft base and a 150 ft height. Its area is:",
+ "A lot has 80 feet of frontage and sells for $1,200 per front foot. The price is:",
+ "How many square feet are in 2.5 acres?",
+ "One hectare equals approximately:",
+ "A 3-acre parcel sells for $2.50 per square foot. The price is:",
+ "Fencing a 100 ft × 200 ft lot costs $15 per linear foot. The cost is:",
+ "A slab is 30 ft × 20 ft × 6 inches thick. How many cubic yards of concrete?",
+ "Assessed value is $180,000 and the tax rate is $2.75 per $100. The tax is:",
+ "Assessed value is $150,000 and the tax rate is 30 mills. The tax is:",
+ "A $300,000 loan at 5% has a $1,800 monthly payment. How much of the first payment goes to principal?",
+ "Price is $460,000, appraisal is $450,000, and the lender allows 90% LTV. The maximum loan is:",
+ "A borrower earns $9,000 a month. Using a 28% housing ratio, the maximum monthly PITI is:",
+ "Monthly income is $8,000 and other debts are $1,000 a month. Using a 36% total debt ratio, the most left for PITI is:",
+ "A home is worth $500,000 and the loan balance is $320,000. The owner's equity is:",
+ "Annual taxes of $6,000 are paid in arrears. Closing is June 30 and the seller hasn't paid. At closing:",
+ "A NYC residential condo sells for $600,000. The NYC transfer tax (RPTT) at 1.425% is:",
+ "A home bought for $500,000 sells for $450,000. The percentage loss is:",
+ "Price $500,000, commission 5%, other closing costs $8,000, mortgage payoff $300,000. The seller nets:",
+ "An L-shaped house is made of a 40 × 30 ft section and a 20 × 15 ft section. Total area is:",
+ "A loan of $150,000 costs $9,000 in interest for one year. The interest rate is:",
+ "A buyer puts 15% down on a $480,000 home. The down payment is:",
+ "Annual insurance of $1,460 was prepaid by the seller. The buyer takes over the policy with 200 days left. At closing:",
+ "A house appreciates 4% a year (simple, not compounded) from $400,000. After 3 years its value is:",
+ "A buyer emails, 'I accept your offer, but the closing must be in 30 days instead of 60.' This is:",
+ "A seller signs a contract with Buyer A, then accepts a higher offer from Buyer B. Buyer A can ask a court for:",
+ "A 17-year-old signs a lease. Later he wants out. The lease is:",
+ "A buyer makes an offer good 'until Friday at 5 PM.' On Thursday, the seller hasn't responded and the buyer withdraws. The withdrawal is:",
+ "The buyer can't get financing by the commitment date in the mortgage contingency and notifies the seller in time. Usually:",
+ "A contract says closing will occur 'on or about' June 1. If the seller is a week late, the buyer usually:",
+ "A buyer and seller agree that a new buyer will take over the contract and the original buyer is fully released. This is:",
+ "A tenant's lease ends August 31. On September 1 she's still there, the landlord refused her rent, and filed to evict. She is a:",
+ "A landlord ignores a broken boiler for weeks in winter. The tenant may:",
+ "A landlord charges a $150 application fee for a credit check. In NY, this is:",
+ "A contract has every element except consideration. It is:",
+ "A lease says rent is $3,000 a month for 2 years, but it was never written down. The landlord tries to raise rent after 6 months. The 2-year term is:",
+ "A contract to sell a home to someone for use as an illegal drug operation is:",
+ "Two neighbors disagree about where the boundary is. The best evidence is a:",
+ "A grantee named in a deed as 'the owner of the house next door' is:",
+ "A buyer wants protection if someone later claims the seller never owned the property. The buyer should get:",
+ "A buyer assumes the backyard swing set is included, but the seller takes it. The swing set is usually:",
+ "A restaurant tenant installed ovens bolted to the floor. When the lease ends, the ovens:",
+ "Grandma deeds her house 'to my daughter for life, then to my grandson.' The grandson holds a:",
+ "A life tenant wants to sell the house in fee simple. She:",
+ "A man dies without a will or any relatives. His condo goes to the state by:",
+ "The owner of a landlocked lot buys the neighboring lot that had the driveway easement. The easement:",
+ "A neighbor lets you park in her driveway during a party. You have a:",
+ "A town paves a road and charges the abutting owners. Until paid, this charge is a:",
+ "A new subway station opens nearby and home prices rise. Which principle explains this?",
+ "A home's only bathroom is reachable only through a bedroom. This is:",
+ "The appraiser's final estimate relies most on sales comparison for a house, with cost as a check. This step is:",
+ "A salesperson's 60/40 split with her broker gives her 60%. Her total commissions this year were $90,000 to the office. She earns:",
+ "A house has 2,400 sq ft and sells for $660,000. A similar 2,000 sq ft house would sell for about:",
+ "A lot is 1.5 acres. How many square feet?",
+ "A buyer's monthly PITI is $3,150 and the lender's front-end limit is 28%. The minimum gross monthly income needed is:",
+ "Annual property tax is $9,125 (365-day year). The seller has paid through December 31. Closing is on September 30, and the buyer owns the 92 days after. The proration credit to the seller is:",
+ "Using the previous building's NOI of $96,000 and a 6% cap rate, the value is:",
+ "A buyer pays $750,000 for a condo with a $600,000 loan. In NYS, the mansion tax is:",
+ "A seller nets $400,000 after paying a 6% commission. The sale price was about:",
+ "A buyer's $500,000 offer includes a 10% down payment held in escrow. At closing, this deposit appears as a:",
+ "A rectangular lot is 50 yards by 100 yards. How many square feet?",
+ "A home's value fell from $500,000 to $425,000. To return to $500,000, it must rise by about:"
+];
+  var RETAG = {
+ "Price $400,000, 20% down, and the lender charges 2 points. The points cost:": "finance",
+ "In a limited partnership, the limited partners:": "comm",
+ "Two investors team up for a single development project only. This is a:": "comm",
+ "A group of investors pooling money to buy property is a:": "comm",
+ "Real estate can't be quickly turned into cash without losing value. This is called:": "comm",
+ "A long-term lease of vacant land on which the tenant builds is a:": "comm",
+ "A lease with rent that steps up on set dates is a:": "comm",
+ "Rent adjustments tied to the Consumer Price Index are found in an:": "comm",
+ "A commercial lease that says the space may be used 'for no other purpose' than a bakery:": "comm",
+ "Does a commercial tenant have a legal right to renew the lease?": "comm",
+ "Market value is $400,000, the assessment ratio is 60%, and the tax rate is $40 per $1,000. The tax is:": "tax",
+ "A town needs to raise $5,000,000. Total assessed value is $250,000,000. The tax rate is:": "tax",
+ "A residential rental building (not land) cost $275,000. Annual straight-line depreciation is:": "tax",
+ "A commercial property cost $500,000; the land is worth $110,000. Annual depreciation is:": "tax",
+ "Bought for $300,000, improvements $50,000, sold for $500,000 with $30,000 in selling costs. The gain is:": "tax",
+ "Potential gross income is $120,000, vacancy is 5%, expenses are $44,000, and the cap rate is 7%. Value is:": "comm",
+ "A property sells for $360,000 and rents for $3,000 a month. The gross rent multiplier is:": "comm",
+ "An investor puts in $200,000 cash and earns $16,000 before-tax cash flow per year. The cash-on-cash return is:": "comm",
+ "An office tenant leases 2,500 sq ft at $48 per sq ft per year. Monthly rent is:": "comm",
+ "Base rent is $48,000/year plus 5% of sales over $960,000. With sales of $1,200,000, total annual rent is:": "comm",
+ "A buyer pays 1.5 points on a $400,000 loan. The cost is:": "finance",
+ "A store's NOI is $45,000. An investor wants a 9% return. The most the investor should pay is:": "comm",
+ "A building is worth $2,000,000 and the cap rate is 6%. The NOI is:": "comm",
+ "Rentable area is 12,000 sq ft and usable is 10,000. The add-on factor is:": "comm",
+ "A 6-unit building has rents of $2,000 each per month and expenses of $48,000 a year. NOI (no vacancy) is:": "comm"
+};
+  var at = {};
+  CARDS.forEach(function(c, i){ at[c.q[0]] = i; });
+  RETIRE.forEach(function(q){ if (at[q] === undefined) throw new Error("v13 retire: no card " + q); CARDS[at[q]].r = 1; });
+  Object.keys(RETAG).forEach(function(q){ if (at[q] === undefined) throw new Error("v13 retag: no card " + q); CARDS[at[q]].t = RETAG[q]; });
+})();
+
 // Tap-to-translate glossary for the NY Salesperson exam cards.
 // Each entry: [term, [other forms in the card text], Chinese term, plain-English definition, Chinese explanation]
 const GLOSS = [
@@ -7314,7 +8274,6 @@ const APP = {
 
 return {TOPICS:TOPICS, CARDS:CARDS, MNEMONICS:MNEMONICS, NUMBERS:NUMBERS, PAIRS:PAIRS, APP:APP, MC:(typeof MC!=='undefined'?MC:null), GLOSS:(typeof GLOSS!=='undefined'?GLOSS:[])};
 };
-EXAMS_META.re = {n:1002, key:"nyre-cards-v1"};
 EXAMS.life = function(){
 const TOPICS = [
   ["reg", "Insurance Regulation", "保险法规"],
@@ -13973,12 +14932,13 @@ const APP = {
 
 return {TOPICS:TOPICS, CARDS:CARDS, MNEMONICS:MNEMONICS, NUMBERS:NUMBERS, PAIRS:PAIRS, APP:APP, MC:(typeof MC!=='undefined'?MC:null), GLOSS:(typeof GLOSS!=='undefined'?GLOSS:[])};
 };
+EXAMS_META.re = {n:1016, key:"nyre-cards-v1"};
 EXAMS_META.life = {n:1024, key:"nylife-cards-v1"};
 </script>
 <script>
 (function(){
 "use strict";
-var VERSION = "v12";
+var VERSION = "v13";
 var SITE = "https://xvartx.github.io/passage/";
 var EX = EXAMS, XM = EXAMS_META;
 /* Exam data is built on first use, so opening the app only pays for the exam you're studying. */
@@ -14021,7 +14981,10 @@ function now(){ return Date.now(); }
 function dstr(d){ return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
 function today(){ return dstr(new Date()); }
 function yesterday(){ var d=new Date(); d.setDate(d.getDate()-1); return dstr(d); }
-function valid(id){ return typeof id==="number" && !!CARDS[id]; }
+/* Retired cards (r:1) stay in the bank so every other card keeps its number and saved progress stays valid,
+   but they never show up in decks, quizzes or counts. */
+function valid(id){ return typeof id==="number" && !!CARDS[id] && !CARDS[id].r; }
+function nActive(){ return idsIn("all").length; }
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function attr(s){ return esc(s).replace(/"/g,"&quot;"); }
 function rx(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"); }
@@ -14034,7 +14997,7 @@ function shuffle(a){ for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.rando
 function topic(id){ for (var i=0;i<TOPICS.length;i++) if (TOPICS[i][0]===id) return TOPICS[i]; return null; }
 function tname(id){ var t=topic(id); if(!t) return ""; return S.lang==="en" ? t[1] : t[2]; }
 function idsIn(t){
-  if (!IDS[t]){ var out=[]; for (var i=0;i<CARDS.length;i++) if (t==="all" || CARDS[i].t===t) out.push(i); IDS[t]=out; }
+  if (!IDS[t]){ var out=[]; for (var i=0;i<CARDS.length;i++) if (!CARDS[i].r && (t==="all" || CARDS[i].t===t)) out.push(i); IDS[t]=out; }
   return IDS[t].slice();
 }
 function inTopic(id){ return valid(id) && (S.topic==="all" || CARDS[id].t===S.topic); }
@@ -14043,7 +15006,7 @@ function missCount(){ return Object.keys(S.miss).length; }
 function addMiss(id){ var m=S.miss[id]||{n:0,s:0}; m.n++; m.s=0; S.miss[id]=m; }
 function hitMiss(id){ var m=S.miss[id]; if(!m) return; m.s++; if (m.s>=2) delete S.miss[id]; }
 function topicOptions(sel){
-  var h='<option value="all"'+(sel==="all"?" selected":"")+'>全部主题（'+CARDS.length+'）</option>';
+  var h='<option value="all"'+(sel==="all"?" selected":"")+'>全部主题（'+nActive()+'）</option>';
   TOPICS.forEach(function(t){ h+='<option value="'+t[0]+'"'+(sel===t[0]?" selected":"")+'>'+esc(t[2]+" · "+t[1])+'（'+idsIn(t[0]).length+'）</option>'; });
   return h;
 }
@@ -14414,8 +15377,8 @@ function applyState(d){
   if (d.mode==="smart"||d.mode==="order") S.mode=d.mode;
   S.unm=!!d.unm; S.shuf=!!d.shuf;
   S.known=new Set((d.known||[]).filter(valid));
-  S.miss={}; Object.keys(d.miss||{}).forEach(function(k){ if (CARDS[k] && d.miss[k]) S.miss[k]={n:+d.miss[k].n||1, s:+d.miss[k].s||0}; });
-  S.srs={}; Object.keys(d.srs||{}).forEach(function(k){ var r=d.srs[k]; if (CARDS[k] && r && typeof r.b==="number") S.srs[k]={b:Math.max(0,Math.min(5,r.b)), d:+r.d||0}; });
+  S.miss={}; Object.keys(d.miss||{}).forEach(function(k){ if (valid(+k) && d.miss[k]) S.miss[k]={n:+d.miss[k].n||1, s:+d.miss[k].s||0}; });
+  S.srs={}; Object.keys(d.srs||{}).forEach(function(k){ var r=d.srs[k]; if (valid(+k) && r && typeof r.b==="number") S.srs[k]={b:Math.max(0,Math.min(5,r.b)), d:+r.d||0}; });
   S.bm=(d.bm && typeof d.bm==="object")?d.bm:{};
   S.so=(d.so && typeof d.so==="object")?d.so:{};
   S.cur=valid(d.cur)?d.cur:null;
@@ -14574,7 +15537,7 @@ function todayN(){ return HUB.day.d===today() ? HUB.day.n : 0; }
 function readiness(){
   var rows=[], cov=0, sum=0;
   TOPICS.forEach(function(t){
-    var w=idsIn(t[0]).length/CARDS.length, s=S.hist[t[0]]||"", n=s.length, r=0;
+    var w=idsIn(t[0]).length/nActive(), s=S.hist[t[0]]||"", n=s.length, r=0;
     for (var i=0;i<n;i++) if (s.charAt(i)==="1") r++;
     var ok=n>=5;
     rows.push({t:t[0], w:w, n:n, r:r, acc:n?r/n:0, ok:ok});
@@ -14612,9 +15575,15 @@ function bmKey(){ return S.topic+(S.shuf?"#s":""); }
 function baseOrder(t){
   var ids=idsIn(t);
   if (!S.shuf) return ids;
-  var so=S.so[t], ok=so && so.length===ids.length;
-  if (ok){ var set={}; ids.forEach(function(i){ set[i]=1; }); for (var k=0;k<so.length;k++){ if (!set[so[k]]){ ok=false; break; } } }
-  if (!ok){ so=shuffle(ids.slice()); S.so[t]=so; }
+  var so=S.so[t];
+  if (so && so.length){
+    /* keep the saved shuffle; drop cards that left the bank and slot new ones in at random after it */
+    var set={}, seen={}; ids.forEach(function(i){ set[i]=1; });
+    var keep=so.filter(function(i){ if (set[i] && !seen[i]){ seen[i]=1; return true; } return false; });
+    var add=shuffle(ids.filter(function(i){ return !seen[i]; }));
+    so=keep.concat(add);
+  } else so=shuffle(ids.slice());
+  S.so[t]=so;
   return so.slice();
 }
 function buildDeck(){
@@ -14623,8 +15592,13 @@ function buildDeck(){
   S.deck=deck;
   var b=S.bm[bmKey()];
   if (b===-1){ S.i=deck.length; return; }
-  if (!valid(b)){ S.i=0; return; }
+  if (typeof b!=="number" || !CARDS[b]){ S.i=0; return; }
   var k=deck.indexOf(b);
+  if (k<0 && CARDS[b].r){
+    /* the bookmarked card was retired: carry on from the next card after it */
+    k=deck.length; for (var q=0;q<deck.length;q++){ if (deck[q]>b){ k=q; break; } }
+    S.i=k; return;
+  }
   if (k<0){
     var pos={}; base.forEach(function(id,ix){ pos[id]=ix; });
     var p=pos[b]; k=deck.length;
@@ -14712,7 +15686,7 @@ function cardBody(id){
   }
   var picked=S.fpick!==null, right=picked && opts[S.fpick].ok, Lt=letterOf(id);
   h+='<div class="ans">';
-  if (picked) h+='<div class="verdict-s '+(right?'r':'w')+'">'+(right?(HUB.auto!==false && AUTO_T?'答对了 · 马上下一张':'答对了'):'选了 '+"ABCD"[S.fpick]+'，正确答案是 '+Lt)+'</div>';
+  if (picked) h+='<div class="verdict-s '+(right?'r':'w')+'">'+(right?(HUB.auto!==false && AUTO_T?'答对了 · 4 秒后自动下一张':'答对了'):'选了 '+"ABCD"[S.fpick]+'，正确答案是 '+Lt)+'</div>';
   h+='<div><div class="lbl">正确答案 · '+Lt+'</div><div class="a">'+Lx(c.a,{g:1})+'</div></div>'+
      '<div class="small">'+Lx(c.x,{g:1})+'</div>'+
      '<div class="hook'+(picked&&!right?' big':'')+'"><div class="lbl">'+(picked&&!right?'记住这句':'记忆点')+'</div><p>'+esc(c.k)+'</p></div></div></article>';
@@ -15060,6 +16034,13 @@ function copyText(text, el){
 
 /* ---------- PLAN ---------- */
 var CHANGES=[
+  ["v13", "房产题库对准纽约官方考纲 + 答对停 4 秒", [
+    "答对后停 4 秒再自动下一题（原来太快）；底部按钮会慢慢填满，想快一点直接点它",
+    "房产题库按纽约州政府 77 小时课程的课时比例重新调整，每个主题的题量现在和官方比例基本一致",
+    "新增 131 道题：代理法（考试占比最大，包括 2024 年起看房前要先签书面买家协议的新规）、商业与投资物业、物业管理、纽约租房法规、保险和税务",
+    "撤下 117 道偏离考纲的题，主要是太多的数学计算题和偏全国通用教材的估价理论",
+    "你的进度、错题本和已掌握的题都保留；撤下的题不会再出现，新题排在顺序学习的最后",
+    "寿险题库本来就和官方考纲比例一致，这次没有改"]],
   ["v12", "解析更清楚：先讲答案，再讲例外", [
     "有朋友反映：「租金何时支付」那题选了「预先支付」被判错，可解析读起来像预付才对。答案没错（租约没写时，法律默认后付），是解析只讲了例外，没讲规则",
     "这题和另外 11 道类似的题，解析都改成先说为什么这个答案对，再说容易混的那个（高利贷 16% vs 25%、新保单犹豫期 10 天 vs 替换 60 天等）",
@@ -15111,13 +16092,13 @@ var CHANGES=[
     "陷阱词标红、考试准备度、进度码、连续打卡和每日目标",
     "模拟考关闭点词和标红，和真考一样"]]
 ];
-function fill(s){ return String(s).replace(/\{N\}/g, CARDS.length).replace(/\{PERDAY\}/g, Math.ceil(CARDS.length/14)); }
+function fill(s){ var n=nActive(); return String(s).replace(/\{N\}/g, n).replace(/\{PERDAY\}/g, Math.ceil(n/14)); }
 function vPlan(){
   var P=A.plan, max=0;
   P.outline.forEach(function(r){ if (r[2]>max) max=r[2]; });
   var auto=HUB.auto!==false;
   var h='<section class="panel stack"><h3>设置</h3>'+
-    '<div class="setrow"><span><b>答对自动下一题</b><small>答对后自动跳到下一题；答错会停下来，方便看解析</small></span>'+
+    '<div class="setrow"><span><b>答对自动下一题</b><small>答对后停 4 秒再跳到下一题；答错会停下来，方便看解析</small></span>'+
     '<button class="switch" data-act="autonext" role="switch" aria-checked="'+auto+'" aria-label="答对自动下一题"><i></i></button></div>'+
     '<div><div class="setlbl"><b>朗读语言</b><small>小喇叭和免提念题用哪种语言；双语是每句先英文、再中文</small></div>'+
     '<div class="modebar three" role="group" aria-label="朗读语言">'+voicePicker('data-act="voice" data-v')+'</div></div></section>';
@@ -15170,7 +16151,7 @@ function vPlan(){
 function examProgress(k){
   var d=null;
   if (k===EXK) d=serialize(); else d=readSaved(XM[k].key);
-  var n=XM[k].n, known=d && d.known ? d.known.length : 0;
+  var n=XM[k].n, known=Math.min(n, d && d.known ? d.known.length : 0);
   var started=!!(d && (known || (d.srs && Object.keys(d.srs).length) || (d.bm && Object.keys(d.bm).length)));
   return {n:n, known:known, started:started};
 }
@@ -15228,18 +16209,19 @@ function scrollToEl(el, smooth){
 function scrollToCard(){ scrollToEl(document.querySelector(".fcard")); }
 function scrollToAnswer(){ scrollToEl(document.querySelector(".ans") || document.querySelector(".fb"), true); }
 /* The next step always sits at the bottom of the screen, so nobody has to scroll down to find it. */
-var AUTO_T=null, AUTO_MS=900;
+var AUTO_T=null, AUTO_MS=4000;
+function autoFill(){ return AUTO_T ? '<i class="autofill" style="animation-duration:'+AUTO_MS+'ms" aria-hidden="true"></i>' : ""; }
 function clearAuto(){ if (AUTO_T){ clearTimeout(AUTO_T); AUTO_T=null; } }
 function nextBarHTML(){
   if (HOME || !HUB.ex || HF) return "";
   if (S.tab==="cards"){
     if (curId()===null || !S.rev) return "";
-    if (S.fpick!==null) return '<button class="btn primary" data-act="adv">下一张 ›</button>';
+    if (S.fpick!==null) return '<button class="btn primary'+(AUTO_T?' auto':'')+'" data-act="adv"><span>下一张 ›</span>'+autoFill()+'</button>';
     return '<div class="grade"><button class="btn bad" data-act="again">再练<small>加入错题本</small></button><button class="btn good" data-act="got">记住了<small>标记掌握</small></button></div>';
   }
   if (S.tab==="quiz" && S.quiz && !S.quiz.done && S.quiz.mode!=="mock"){
     if (S.quiz.items[S.quiz.qi].pick===null) return "";
-    return '<button class="btn primary" data-act="qnext">'+(S.quiz.qi===S.quiz.items.length-1?"看成绩":"下一题 ›")+'</button>';
+    return '<button class="btn primary'+(AUTO_T?' auto':'')+'" data-act="qnext"><span>'+(S.quiz.qi===S.quiz.items.length-1?"看成绩":"下一题 ›")+'</span>'+autoFill()+'</button>';
   }
   return "";
 }
@@ -15483,9 +16465,9 @@ if (!HUB.lang) HUB.lang=S.lang;
 saveHub();
 render();
 if (had && !HOME){ resumeToast(); if (S.tab==="cards" && (S.i>0 || Object.keys(S.srs).length)) setTimeout(scrollToCard, 60); }
-if (!HUB.seen.v12){
-  ["v3","v4","v5","v6","v7","v8","v9","v10","v11","v12"].forEach(function(v){ HUB.seen[v]=1; }); saveHub();
-  if (had) setTimeout(function(){ toast("已更新到 v12：12 道题的解析改得更清楚了"); }, 3900);
+if (!HUB.seen.v13){
+  ["v3","v4","v5","v6","v7","v8","v9","v10","v11","v12","v13"].forEach(function(v){ HUB.seen[v]=1; }); saveHub();
+  if (had) setTimeout(function(){ toast("已更新到 v13：房产题库对准官方考纲，答对停 4 秒"); }, 3900);
 }
 initSync();
 })();
