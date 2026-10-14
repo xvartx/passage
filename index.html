@@ -2783,7 +2783,7 @@ CARDS.push(
  q:["An owner's title policy is usually written for:","业主产权保单通常按什么金额承保？"],
  a:["The purchase price","购买价格"],
  w:[["The loan amount","贷款金额"],["The assessed value","评估税值"],["The land value only","仅土地价值"]],
- x:["A lender's policy is written for the loan amount and protects only the lender.","贷款方保单按贷款额承保，只保护贷款方。"],
+ x:["The owner's policy covers the purchase price and protects the buyer. A lender's policy is the one written for the loan amount, and it protects only the lender.","业主保单按购买价格承保，保护的是买家。按贷款额承保的是贷款方保单，只保护贷款方。"],
  k:"Owner's = 房价；Lender's = 贷款额"},
 {t:"deeds",
  q:["On the closing statement, the purchase price is a:","在过户结算单上，购买价格是："],
@@ -3038,8 +3038,8 @@ CARDS.push(
  q:["Unless the lease says otherwise, rent is due:","除非租约另有约定，租金应在何时支付？"],
  a:["In arrears (at the end of the period)","期末支付（后付）"],
  w:[["In advance","预先支付"],["Quarterly","按季度"],["Only at lease end","租期结束时"]],
- x:["Most leases override this by requiring rent in advance on the 1st.","多数租约会改为每月 1 号预付。"],
- k:"默认后付；租约通常改成预付"},
+ x:["The question asks for the default rule: what applies when the lease says nothing. By law, rent is then paid in arrears, after the period is over. 'In advance' is the trap: most real leases do require rent on the 1st, but only because the lease writes that in.","题目问的是「租约没写」时的默认规则：法律默认租金在这一期结束后再付（后付）。「预先支付」是陷阱：现实中大多数租约确实写了「每月 1 号预付」，但那是租约另外约定的，不是默认规则。"],
+ k:"租约没写 → 后付；预付要写进租约才算"},
 {t:"contracts",
  q:["A long-term lease of vacant land on which the tenant builds is a:","租户在长期租用的空地上建房，这叫："],
  a:["Ground lease","土地租约（ground lease）"],
@@ -3203,7 +3203,7 @@ CARDS.push(
  q:["In the early years of a fully amortized fixed-rate loan, most of each payment goes to:","完全摊还固定利率贷款的前几年，每期付款大部分用于："],
  a:["Interest","利息"],
  w:[["Principal","本金"],["Taxes","税"],["Insurance","保险"]],
- x:["Payments stay the same, but the principal portion grows over time.","月供不变，但本金比例随时间增加。"],
+ x:["Early on you owe the most principal, so most of each payment is interest. The payment stays the same, and the principal share grows over time.","前几年欠的本金最多，所以每期月供大部分是利息。月供金额不变，本金所占比例会随时间慢慢增加。"],
  k:"前期多付利息，后期多还本金"},
 {t:"finance",
  q:["On an adjustable-rate mortgage, the interest rate equals:","可调利率贷款的利率等于："],
@@ -3359,7 +3359,7 @@ CARDS.push(
  q:["NY's civil usury limit on most loans is:","纽约对大多数贷款的民事高利贷上限是："],
  a:["16%","16%"],
  w:[["10%","10%"],["25%","25%"],["36%","36%"]],
- x:["Charging over 25% can be criminal usury.","超过 25% 可能构成刑事高利贷。"],
+ x:["16% is the civil limit; above 25% can be criminal usury. The question asks about the civil limit.","民事上限是 16%；超过 25% 才可能构成刑事高利贷。题目问的是民事上限。"],
  k:"民事 16% · 刑事 25%"},
 {t:"finance",
  q:["Lenders often collect monthly amounts for taxes and insurance in a(n):","贷款方常每月收取税费和保险费，存入："],
@@ -5048,7 +5048,7 @@ CARDS.push(
  q:["A lease clause making the tenant's rights junior to a future mortgage is a:","使租户权利次于未来抵押的租约条款叫："],
  a:["Subordination clause","从属条款（subordination）"],
  w:[["Non-disturbance clause","不干扰条款"],["Estoppel clause","禁反言条款"],["Use clause","用途条款"]],
- x:["Tenants usually ask for non-disturbance in return.","租户通常会要求不干扰条款作为交换。"],
+ x:["A subordination clause puts the lease behind a future mortgage. In return, tenants usually ask for a non-disturbance clause so a foreclosure can't evict them.","从属条款让租约排在未来的抵押之后。作为交换，租户通常会要求加一条不干扰条款，保证法拍时不被赶走。"],
  k:"Subordinate = 租户排在银行后面"},
 {t:"comm",
  q:["Shared costs for maintaining parking lots and hallways in a shopping center are:","购物中心停车场和走廊的公共维护费用叫："],
@@ -5120,7 +5120,7 @@ CARDS.push(
  q:["Under NY law, if a house burns down after the contract is signed but before closing or possession, the risk of loss is generally on the:","根据纽约法律，签约后、过户或交房前房子被烧毁，损失风险一般由谁承担？"],
  a:["Seller","卖家"],
  w:[["Buyer","买家"],["Broker","经纪人"],["Lender","贷款方"]],
- x:["Under the Uniform Vendor and Purchaser Risk Act, the buyer may cancel and get the deposit back.","根据《统一卖方与买方风险法》，买家可以取消并取回定金。"],
+ x:["Until title or possession passes to the buyer, the seller bears the risk. Under the Uniform Vendor and Purchaser Risk Act, the buyer may cancel and get the deposit back.","在产权或占有转给买家之前，风险由卖家承担。根据《统一卖方与买方风险法》，买家可以取消合同并取回定金。"],
  k:"过户前出事 = 卖家扛"},
 {t:"comm",
  q:["A cash buyer with no lender should get homeowners insurance:","没有贷款的现金买家应该何时买房屋保险？"],
@@ -6203,7 +6203,7 @@ CARDS.push(
  q:["A restaurant tenant installed ovens bolted to the floor. When the lease ends, the ovens:","餐厅租户安装了固定在地板上的烤箱。租约结束时，烤箱："],
  a:["Can be removed by the tenant as trade fixtures, repairing any damage","作为营业附着物可由租户拆走，并修复损坏"],
  w:[["Belong to the landlord","归房东"],["Must be sold to the landlord","必须卖给房东"],["Become the next tenant's","归下一位租户"]],
- x:["They must be removed before the lease ends or they may become the landlord's.","须在租约结束前拆走，否则可能归房东。"],
+ x:["Trade fixtures belong to the tenant even when bolted down, so the tenant may take them and repair the damage. Timing matters: if they aren't removed before the lease ends, they may become the landlord's.","营业附着物即使固定在地上，也属于租户，租户可以拆走并修复损坏。要注意时间：如果租约结束前没拆走，可能就归房东了。"],
  k:"营业设备 = 租户的，按时搬"},
 {t:"own",
  q:["Grandma deeds her house 'to my daughter for life, then to my grandson.' The grandson holds a:","奶奶把房子契据写为「给女儿终身，之后给孙子」。孙子持有："],
@@ -8144,7 +8144,7 @@ CARDS.push(
  q:["The rule that oral agreements made before a written contract can't change its terms is the:","书面合同签订前的口头约定不能改变其条款，这叫："],
  a:["Parol evidence rule","口头证据规则"],
  w:[["Entire contract clause","完整合同条款"],["Doctrine of estoppel","禁反言原则"],["Utmost good faith","最大诚信"]],
- x:["This supports the entire contract provision in life policies.","这支撑了寿险保单中的完整合同条款。"],
+ x:["The parol evidence rule is the general contract-law rule. The entire contract provision in life policies is built on it, but the rule itself is the parol evidence rule.","口头证据规则是一般合同法的规则。寿险保单里的「完整合同条款」是建立在它之上的，但题目问的规则本身是口头证据规则。"],
  k:"口头说的不算，写的才算"},
 {t:"gen",
  q:["Unlike property insurance, life insurance is NOT a contract of indemnity because:","与财产险不同，寿险不是补偿合同，因为："],
@@ -8186,7 +8186,7 @@ CARDS.push(
  q:["The person whose death triggers the life insurance benefit is the:","其死亡触发寿险给付的人是："],
  a:["Insured","被保险人"],
  w:[["Owner","持有人"],["Beneficiary","受益人"],["Annuitant","年金领取人"]],
- x:["The beneficiary receives the death benefit.","受益人领取身故保险金。"],
+ x:["The insured's death triggers the benefit. The beneficiary is the person who receives it.","被保险人去世才会触发给付。受益人是领取保险金的人。"],
  k:"Insured = 被保的那条命"},
 {t:"gen",
  q:["A policy for $250,000 has a face amount of $250,000. The face amount is:","保额 25 万的保单，face amount 是 25 万。Face amount 指的是："],
@@ -9468,7 +9468,7 @@ CARDS.push(
  q:["The free look period for a new NY life policy (not a replacement) is generally:","纽约新寿险（非替换）的犹豫期一般是："],
  a:["10 days","10 天"],
  w:[["30 days","30 天"],["60 days","60 天"],["3 days","3 天"]],
- x:["Replacements get 60 days under Reg 60.","替换保单按第 60 号条例有 60 天。"],
+ x:["A new policy gets 10 days. The 60-day period applies only to replacements, under Reg 60.","新保单的犹豫期是 10 天。60 天只适用于替换保单（第 60 号条例）。"],
  k:"新单 10 天 · 换单 60 天"},
 {t:"prov",
  q:["An owner returns a policy during the free look period. She receives:","持有人在犹豫期内退回保单。她会得到："],
@@ -10089,7 +10089,7 @@ CARDS.push(
  q:["The period during which an annuity owner pays premiums and the account value grows is the:","持有人缴保费、账户价值增长的阶段称为："],
  a:["Accumulation period","积累期"],
  w:[["Annuitization period","年金化期"],["Liquidation period","清算期"],["Elimination period","免责期"]],
- x:["The payout (annuity or liquidation) period begins at annuitization.","给付期（年金期、清算期）从年金化开始。"],
+ x:["Paying in while the value grows is the accumulation period. The payout (annuity or liquidation) period starts at annuitization.","缴保费、账户增长的阶段是积累期。从年金化开始领钱，才叫给付期（年金期、清算期）。"],
  k:"交钱长钱 = 积累期"},
 {t:"ann",
  q:["Converting an annuity's accumulated value into a stream of income payments is called:","把年金积累的价值转换为一连串收入给付，称为："],
@@ -11328,7 +11328,7 @@ CARDS.push(
  q:["When whole life is bought inside a qualified plan, the incidental rule generally keeps premiums below what share of the employer's contributions?","在合格计划内购买终身寿险时，“附带性”（incidental）规则一般要求保费低于雇主供款的多少？"],
  a:["50%","50%"],
  w:[["25%","25%"],["10%","10%"],["75%","75%"]],
- x:["Insurance must stay incidental to the retirement purpose; for term or universal life the limit is 25%.","保险必须从属于退休目的；定期或万能寿险的上限是 25%。"],
+ x:["For whole life the limit is 50% of employer contributions; for term or universal life it is 25%. Either way, insurance must stay incidental to the retirement purpose.","终身寿险的上限是雇主供款的 50%；定期或万能寿险才是 25%。无论哪种，保险都必须从属于退休目的。"],
  k:"终身 < 50%，定期/UL ≤ 25%"},
 {t:"qp",
  q:["Which retirement account may NOT hold a life insurance policy?","哪种退休账户不可以持有寿险保单？"],
@@ -13978,7 +13978,7 @@ EXAMS_META.life = {n:1024, key:"nylife-cards-v1"};
 <script>
 (function(){
 "use strict";
-var VERSION = "v11";
+var VERSION = "v12";
 var SITE = "https://xvartx.github.io/passage/";
 var EX = EXAMS, XM = EXAMS_META;
 /* Exam data is built on first use, so opening the app only pays for the exam you're studying. */
@@ -15060,6 +15060,10 @@ function copyText(text, el){
 
 /* ---------- PLAN ---------- */
 var CHANGES=[
+  ["v12", "解析更清楚：先讲答案，再讲例外", [
+    "有朋友反映：「租金何时支付」那题选了「预先支付」被判错，可解析读起来像预付才对。答案没错（租约没写时，法律默认后付），是解析只讲了例外，没讲规则",
+    "这题和另外 11 道类似的题，解析都改成先说为什么这个答案对，再说容易混的那个（高利贷 16% vs 25%、新保单犹豫期 10 天 vs 替换 60 天等）",
+    "这次只改了文字，你的进度、错题本都不受影响"]],
   ["v11", "离线可用 + 进度更安全 + 打开更快", [
     "打开过一次以后，没网也能刷题；再次打开几乎是瞬间",
     "有新版本时，屏幕上方会出现「点这里更新」，点一下就是最新版",
@@ -15479,9 +15483,9 @@ if (!HUB.lang) HUB.lang=S.lang;
 saveHub();
 render();
 if (had && !HOME){ resumeToast(); if (S.tab==="cards" && (S.i>0 || Object.keys(S.srs).length)) setTimeout(scrollToCard, 60); }
-if (!HUB.seen.v11){
-  ["v3","v4","v5","v6","v7","v8","v9","v10","v11"].forEach(function(v){ HUB.seen[v]=1; }); saveHub();
-  if (had) setTimeout(function(){ toast("已更新到 v11：没网也能用，进度更安全"); }, 3900);
+if (!HUB.seen.v12){
+  ["v3","v4","v5","v6","v7","v8","v9","v10","v11","v12"].forEach(function(v){ HUB.seen[v]=1; }); saveHub();
+  if (had) setTimeout(function(){ toast("已更新到 v12：12 道题的解析改得更清楚了"); }, 3900);
 }
 initSync();
 })();
