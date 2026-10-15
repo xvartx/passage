@@ -1,5 +1,5 @@
 /* 通关 Passage service worker */
-const CACHE = "passage-v13-e68e883016";
+const CACHE = "passage-v14-65ec81875b";
 const SHELL = ["./", "./manifest.webmanifest", "./icon-180.png", "./icon-192.png", "./icon-512.png"];
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE)
