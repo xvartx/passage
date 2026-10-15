@@ -1,6 +1,9 @@
 /* 通关 Passage service worker */
-const CACHE = "passage-v14-65ec81875b";
+const CACHE = "passage-v15-1c6e089762";
+const ROOT = new URL("./", self.location).pathname;
 const SHELL = ["./", "./manifest.webmanifest", "./icon-180.png", "./icon-192.png", "./icon-512.png"];
+/* Only files directly in this app's folder belong to this worker; anything deeper is another app. */
+function mine(url) { return url.origin === self.location.origin && url.pathname.startsWith(ROOT) && !url.pathname.slice(ROOT.length).includes("/"); }
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE)
     .then((c) => c.addAll(SHELL.map((u) => new Request(u, { cache: "reload" }))))
@@ -12,10 +15,10 @@ self.addEventListener("activate", (e) => {
     .then(() => self.clients.claim()));
 });
 function tag(res) { return res ? (res.headers.get("etag") || res.headers.get("last-modified") || "") : ""; }
-async function refreshPage(request) {
+async function refreshPage() {
   const cache = await caches.open(CACHE);
   const old = await cache.match("./");
-  const res = await fetch(request, { cache: "no-store" });
+  const res = await fetch(ROOT, { cache: "no-store" });
   if (!res || !res.ok) return;
   await cache.put("./", res.clone());
   if (old && tag(res) && tag(res) !== tag(old)) {
@@ -27,12 +30,14 @@ self.addEventListener("fetch", (e) => {
   const req = e.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
-  if (url.origin !== self.location.origin) return;
+  if (!mine(url)) return;
   if (req.mode === "navigate") {
+    const p = url.pathname.slice(ROOT.length);
+    if (p !== "" && p !== "index.html") return;
     e.respondWith((async () => {
       const cache = await caches.open(CACHE);
       const hit = await cache.match("./");
-      if (hit) { e.waitUntil(refreshPage(req).catch(() => {})); return hit; }
+      if (hit) { e.waitUntil(refreshPage().catch(() => {})); return hit; }
       try {
         const res = await fetch(req);
         if (res && res.ok) await cache.put("./", res.clone());
