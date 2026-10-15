@@ -1,5 +1,5 @@
 /* 通关·入籍 service worker */
-const CACHE = "citpass-V1-c1d6a566ba";
+const CACHE = "citpass-V2-410044d1a0";
 const ROOT = new URL("./", self.location).pathname;
 const SHELL = ["./", "./manifest.webmanifest", "./icon-180.png", "./icon-192.png", "./icon-512.png"];
 /* Only files directly in this app's folder belong to this worker; anything deeper is another app. */

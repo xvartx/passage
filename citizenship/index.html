@@ -435,6 +435,14 @@ input,select,textarea,.search{font-size:16px}
 .related b{display:block;font-size:15px;line-height:1.35}
 .related small{display:block;color:var(--muted);font-size:13px;margin-top:2px;line-height:1.4}
 .related .go{color:var(--moss);font-weight:600;white-space:nowrap}
+
+/* oral exams: answer shown with the question; self-grading in quizzes */
+.ans.oral{border-top:0;padding-top:4px;margin-top:2px}
+.fcard .ans.oral{border-top:1px solid var(--line);padding-top:14px;margin-top:4px}
+.grade.selfgrade{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grade.selfgrade .btn{min-height:52px;font-size:16px}
+.grade.selfgrade .btn.sel{outline:3px solid var(--ink);outline-offset:2px}
+.hf-abcd.one{grid-template-columns:1fr}
 </style>
 </head>
 <body>
@@ -1749,127 +1757,127 @@ CARDS.push(
 CARDS.push(
 /* ===== ENGLISH TEST · Reading: read the question aloud, then know the answer you'd write ===== */
 {t:"rw",
- q:["Reading test: read aloud 'Who was the first President?' Which sentence answers it?","阅读测试：大声读「Who was the first President?」（谁是第一任总统？）哪一句是答案？"],
+ q:["Reading test: read aloud 'Who was the first President?' What is the answer?","阅读测试：大声读「Who was the first President?」（谁是第一任总统？）答案是什么？"],
  a:["Washington was the first President.","Washington was the first President.（华盛顿是第一任总统。）"],
  w:[["Lincoln was the first President.","Lincoln was the first President.（林肯是第一任总统。）"],["Adams was the first President.","Adams was the first President.（亚当斯是第一任总统。）"],["Washington is the capital.","Washington is the capital.（华盛顿是首都。）"]],
  x:["You only need to read 1 of 3 sentences correctly. Read slowly and clearly; small accent differences are fine.","三句里读对一句就过。读慢一点、清楚一点，口音不要紧。"],
  k:"first President = Washington"},
 {t:"rw",
- q:["Reading test: read aloud 'Who is the Father of Our Country?' Which sentence answers it?","阅读测试：大声读「Who is the Father of Our Country?」（谁是国父？）哪一句是答案？"],
+ q:["Reading test: read aloud 'Who is the Father of Our Country?' What is the answer?","阅读测试：大声读「Who is the Father of Our Country?」（谁是国父？）答案是什么？"],
  a:["Washington is the Father of Our Country.","Washington is the Father of Our Country.（华盛顿是国父。）"],
  w:[["Lincoln is the Father of Our Country.","Lincoln is the Father of Our Country.（林肯是国父。）"],["Adams is the Father of Our Country.","Adams is the Father of Our Country.（亚当斯是国父。）"],["Congress is the Father of Our Country.","Congress is the Father of Our Country.（国会是国父。）"]],
  x:["'Father of Our Country' is on both the reading and writing lists.","Father of Our Country 在阅读和写作词汇表里都有。"],
  k:"国父 = Washington"},
 {t:"rw",
- q:["Reading test: read aloud 'Who was President during the Civil War?' Which sentence answers it?","阅读测试：大声读「Who was President during the Civil War?」（南北战争时谁是总统？）哪一句是答案？"],
+ q:["Reading test: read aloud 'Who was President during the Civil War?' What is the answer?","阅读测试：大声读「Who was President during the Civil War?」（南北战争时谁是总统？）答案是什么？"],
  a:["Lincoln was President during the Civil War.","Lincoln was President during the Civil War.（南北战争时林肯是总统。）"],
  w:[["Washington was President during the Civil War.","Washington was President during the Civil War.（南北战争时华盛顿是总统。）"],["Adams was President during the Civil War.","Adams was President during the Civil War.（南北战争时亚当斯是总统。）"],["Lincoln was the first President.","Lincoln was the first President.（林肯是第一任总统。）"]],
  x:["'During' (在……期间) is on the writing list. Lincoln led the country in the Civil War.","during（在……期间）在写作词汇表里。林肯在南北战争时领导国家。"],
  k:"Civil War = Lincoln"},
 {t:"rw",
- q:["Reading test: read aloud 'Who was the second President?' Which sentence answers it?","阅读测试：大声读「Who was the second President?」（谁是第二任总统？）哪一句是答案？"],
+ q:["Reading test: read aloud 'Who was the second President?' What is the answer?","阅读测试：大声读「Who was the second President?」（谁是第二任总统？）答案是什么？"],
  a:["Adams was the second President.","Adams was the second President.（亚当斯是第二任总统。）"],
  w:[["Washington was the second President.","Washington was the second President.（华盛顿是第二任总统。）"],["Lincoln was the second President.","Lincoln was the second President.（林肯是第二任总统。）"],["Adams was the first President.","Adams was the first President.（亚当斯是第一任总统。）"]],
  x:["John Adams was the second President. 'First' and 'second' are both on the lists.","约翰·亚当斯是第二任总统。first 和 second 都在词汇表里。"],
  k:"second President = Adams"},
 {t:"rw",
- q:["Reading test: read aloud 'What is the capital of the United States?' Which sentence answers it?","阅读测试：大声读「What is the capital of the United States?」（美国首都是哪里？）哪一句是答案？"],
+ q:["Reading test: read aloud 'What is the capital of the United States?' What is the answer?","阅读测试：大声读「What is the capital of the United States?」（美国首都是哪里？）答案是什么？"],
  a:["Washington, D.C. is the capital of the United States.","Washington, D.C. is the capital of the United States.（华盛顿特区是美国首都。）"],
  w:[["New York City is the capital of the United States.","New York City is the capital of the United States.（纽约市是美国首都。）"],["California is the capital of the United States.","California is the capital of the United States.（加州是美国首都。）"],["Washington, D.C. is the largest state.","Washington, D.C. is the largest state.（华盛顿特区是最大的州。）"]],
  x:["Capital (首都) is on both lists. Don't confuse it with 'Capitol', the building where Congress meets.","capital（首都）两个表都有。不要和 Capitol（国会大厦）搞混。"],
  k:"capital = Washington, D.C."},
 {t:"rw",
- q:["Reading test: read aloud 'Where does the President live?' Which sentence answers it?","阅读测试：大声读「Where does the President live?」（总统住在哪里？）哪一句是答案？"],
+ q:["Reading test: read aloud 'Where does the President live?' What is the answer?","阅读测试：大声读「Where does the President live?」（总统住在哪里？）答案是什么？"],
  a:["The President lives in the White House.","The President lives in the White House.（总统住在白宫。）"],
  w:[["The President lives in New York City.","The President lives in New York City.（总统住在纽约市。）"],["The President lives in Alaska.","The President lives in Alaska.（总统住在阿拉斯加。）"],["Congress lives in the White House.","Congress lives in the White House.（国会住在白宫。）"]],
  x:["'Lives' and 'White House' are on both lists.","lives 和 White House 两个表都有。"],
  k:"President → White House"},
 {t:"rw",
- q:["Reading test: read aloud 'What is the largest state?' Which sentence answers it?","阅读测试：大声读「What is the largest state?」（最大的州是哪个？）哪一句是答案？"],
+ q:["Reading test: read aloud 'What is the largest state?' What is the answer?","阅读测试：大声读「What is the largest state?」（最大的州是哪个？）答案是什么？"],
  a:["Alaska is the largest state.","Alaska is the largest state.（阿拉斯加是最大的州。）"],
  w:[["California is the largest state.","California is the largest state.（加州是最大的州。）"],["Delaware is the largest state.","Delaware is the largest state.（特拉华是最大的州。）"],["New York City is the largest state.","New York City is the largest state.（纽约市是最大的州。）"]],
  x:["Largest by land = Alaska. Most people = California.","面积最大 = 阿拉斯加；人口最多 = 加州。"],
  k:"最大 = Alaska；人最多 = California"},
 {t:"rw",
- q:["Reading test: read aloud 'What state has the most people?' Which sentence answers it?","阅读测试：大声读「What state has the most people?」（哪个州人口最多？）哪一句是答案？"],
+ q:["Reading test: read aloud 'What state has the most people?' What is the answer?","阅读测试：大声读「What state has the most people?」（哪个州人口最多？）答案是什么？"],
  a:["California has the most people.","California has the most people.（加州人口最多。）"],
  w:[["Alaska has the most people.","Alaska has the most people.（阿拉斯加人口最多。）"],["Delaware has the most people.","Delaware has the most people.（特拉华人口最多。）"],["Canada has the most people.","Canada has the most people.（加拿大人口最多。）"]],
  x:["'Most' and 'people' are on both lists.","most 和 people 两个表都有。"],
  k:"人最多 = California"},
 {t:"rw",
- q:["Reading test: read aloud 'What country is north of the United States?' Which sentence answers it?","阅读测试：大声读「What country is north of the United States?」（美国北边是哪个国家？）哪一句是答案？"],
+ q:["Reading test: read aloud 'What country is north of the United States?' What is the answer?","阅读测试：大声读「What country is north of the United States?」（美国北边是哪个国家？）答案是什么？"],
  a:["Canada is north of the United States.","Canada is north of the United States.（加拿大在美国北边。）"],
  w:[["Mexico is north of the United States.","Mexico is north of the United States.（墨西哥在美国北边。）"],["Alaska is north of Canada.","Alaska is north of Canada.（阿拉斯加在加拿大北边。）"],["Canada is south of the United States.","Canada is south of the United States.（加拿大在美国南边。）"]],
  x:["North = Canada; south = Mexico.","北边 = 加拿大；南边 = 墨西哥。"],
  k:"北 Canada · 南 Mexico"},
 {t:"rw",
- q:["Reading test: read aloud 'What country is south of the United States?' Which sentence answers it?","阅读测试：大声读「What country is south of the United States?」（美国南边是哪个国家？）哪一句是答案？"],
+ q:["Reading test: read aloud 'What country is south of the United States?' What is the answer?","阅读测试：大声读「What country is south of the United States?」（美国南边是哪个国家？）答案是什么？"],
  a:["Mexico is south of the United States.","Mexico is south of the United States.（墨西哥在美国南边。）"],
  w:[["Canada is south of the United States.","Canada is south of the United States.（加拿大在美国南边。）"],["California is south of Mexico.","California is south of Mexico.（加州在墨西哥南边。）"],["Mexico is north of the United States.","Mexico is north of the United States.（墨西哥在美国北边。）"]],
  x:["'North' and 'south' are both on the lists.","north 和 south 两个表都有。"],
  k:"南边 = Mexico"},
 {t:"rw",
- q:["Reading test: read aloud 'What was the first state?' Which sentence answers it?","阅读测试：大声读「What was the first state?」（第一个州是哪个？）哪一句是答案？"],
+ q:["Reading test: read aloud 'What was the first state?' What is the answer?","阅读测试：大声读「What was the first state?」（第一个州是哪个？）答案是什么？"],
  a:["Delaware was the first state.","Delaware was the first state.（特拉华是第一个州。）"],
  w:[["New York was the first state.","New York was the first state.（纽约是第一个州。）"],["Alaska was the first state.","Alaska was the first state.（阿拉斯加是第一个州。）"],["California was the first state.","California was the first state.（加州是第一个州。）"]],
  x:["Delaware was the first state to approve the Constitution, in 1787.","特拉华是 1787 年第一个批准宪法的州。"],
  k:"第一个州 = Delaware"},
 {t:"rw",
- q:["Reading test: read aloud 'Who lived here first?' Which sentence answers it?","阅读测试：大声读「Who lived here first?」（谁最早住在这里？）哪一句是答案？"],
+ q:["Reading test: read aloud 'Who lived here first?' What is the answer?","阅读测试：大声读「Who lived here first?」（谁最早住在这里？）答案是什么？"],
  a:["American Indians lived here first.","American Indians lived here first.（美洲印第安人最早住在这里。）"],
  w:[["Citizens lived here first.","Citizens lived here first.（公民最早住在这里。）"],["Senators lived here first.","Senators lived here first.（参议员最早住在这里。）"],["Washington lived here first.","Washington lived here first.（华盛顿最早住在这里。）"]],
  x:["'American Indians' and 'lived' are on the writing list.","American Indians 和 lived 在写作词汇表里。"],
  k:"最早 = American Indians"},
 {t:"rw",
- q:["Reading test: read aloud 'Who elects Congress?' Which sentence answers it?","阅读测试：大声读「Who elects Congress?」（谁选出国会？）哪一句是答案？"],
+ q:["Reading test: read aloud 'Who elects Congress?' What is the answer?","阅读测试：大声读「Who elects Congress?」（谁选出国会？）答案是什么？"],
  a:["The people elect Congress.","The people elect Congress.（人民选出国会。）"],
  w:[["The President elects Congress.","The President elects Congress.（总统选出国会。）"],["Congress elects the people.","Congress elects the people.（国会选出人民。）"],["The White House elects Congress.","The White House elects Congress.（白宫选出国会。）"]],
  x:["'Elect' means to choose by voting.","elect = 投票选出。"],
  k:"人民选国会"},
 {t:"rw",
- q:["Reading test: read aloud 'How many Senators does Congress have?' Which sentence answers it?","阅读测试：大声读「How many Senators does Congress have?」（国会有多少参议员？）哪一句是答案？"],
+ q:["Reading test: read aloud 'How many Senators does Congress have?' What is the answer?","阅读测试：大声读「How many Senators does Congress have?」（国会有多少参议员？）答案是什么？"],
  a:["Congress has one hundred (100) Senators.","Congress has one hundred (100) Senators.（国会有 100 名参议员。）"],
  w:[["Congress has fifty (50) Senators.","Congress has fifty (50) Senators.（国会有 50 名参议员。）"],["Congress has one (1) Senator.","Congress has one (1) Senator.（国会有 1 名参议员。）"],["The President has one hundred (100) Senators.","The President has one hundred (100) Senators.（总统有 100 名参议员。）"]],
  x:["You may write the number as '100' or 'one hundred'.","数字写 100 或 one hundred 都可以。"],
  k:"100 Senators"},
 {t:"rw",
- q:["Reading test: read aloud 'Where does Congress meet?' Which sentence answers it?","阅读测试：大声读「Where does Congress meet?」（国会在哪里开会？）哪一句是答案？"],
+ q:["Reading test: read aloud 'Where does Congress meet?' What is the answer?","阅读测试：大声读「Where does Congress meet?」（国会在哪里开会？）答案是什么？"],
  a:["Congress meets in Washington, D.C.","Congress meets in Washington, D.C.（国会在华盛顿特区开会。）"],
  w:[["Congress meets in New York City.","Congress meets in New York City.（国会在纽约市开会。）"],["Congress meets in the White House.","Congress meets in the White House.（国会在白宫开会。）"],["Congress meets in Canada.","Congress meets in Canada.（国会在加拿大开会。）"]],
  x:["Congress meets in the Capitol building in Washington, D.C.; the President works in the White House.","国会在华盛顿特区的国会大厦开会；总统在白宫办公。"],
  k:"Congress meets in Washington, D.C."},
 {t:"rw",
- q:["Reading test: read aloud 'Who can vote?' Which sentence answers it?","阅读测试：大声读「Who can vote?」（谁可以投票？）哪一句是答案？"],
+ q:["Reading test: read aloud 'Who can vote?' What is the answer?","阅读测试：大声读「Who can vote?」（谁可以投票？）答案是什么？"],
  a:["Citizens can vote.","Citizens can vote.（公民可以投票。）"],
  w:[["Everyone can vote.","Everyone can vote.（每个人都可以投票。）"],["The President can vote for you.","The President can vote for you.（总统可以替你投票。）"],["Senators can vote for citizens.","Senators can vote for citizens.（参议员替公民投票。）"]],
  x:["Only U.S. citizens can vote in federal elections.","只有美国公民能在联邦选举中投票。"],
  k:"Citizens can vote"},
 {t:"rw",
- q:["Reading test: read aloud 'Why do people come to America?' Which sentence answers it?","阅读测试：大声读「Why do people come to America?」（人们为什么来美国？）哪一句是答案？"],
+ q:["Reading test: read aloud 'Why do people come to America?' What is the answer?","阅读测试：大声读「Why do people come to America?」（人们为什么来美国？）答案是什么？"],
  a:["People come here to be free.","People come here to be free.（人们来这里追求自由。）"],
  w:[["People come here to pay taxes.","People come here to pay taxes.（人们来这里交税。）"],["People come here to elect Canada.","People come here to elect Canada.（人们来这里选加拿大。）"],["People come here to meet the flag.","People come here to meet the flag.（人们来这里见国旗。）"]],
  x:["'Free' and 'freedom' are key words on the lists.","free 和 freedom 是词汇表里的关键词。"],
  k:"come here to be free"},
 {t:"rw",
- q:["Reading test: read aloud 'What are the colors of the American flag?' Which sentence answers it?","阅读测试：大声读「What are the colors of the American flag?」（美国国旗是什么颜色？）哪一句是答案？"],
+ q:["Reading test: read aloud 'What are the colors of the American flag?' What is the answer?","阅读测试：大声读「What are the colors of the American flag?」（美国国旗是什么颜色？）答案是什么？"],
  a:["The flag is red, white, and blue.","The flag is red, white, and blue.（国旗是红、白、蓝色。）"],
  w:[["The flag is red, white, and green.","The flag is red, white, and green.（国旗是红、白、绿色。）"],["The flag is blue and white.","The flag is blue and white.（国旗是蓝白色。）"],["The flag is red and yellow.","The flag is red and yellow.（国旗是红黄色。）"]],
  x:["Red, white, and blue are on the writing list.","red、white、blue 都在写作词汇表里。"],
  k:"red, white, and blue"},
 {t:"rw",
- q:["Reading test: read aloud 'Who is on the dollar bill?' Which sentence answers it?","阅读测试：大声读「Who is on the dollar bill?」（一美元纸币上是谁？）哪一句是答案？"],
+ q:["Reading test: read aloud 'Who is on the dollar bill?' What is the answer?","阅读测试：大声读「Who is on the dollar bill?」（一美元纸币上是谁？）答案是什么？"],
  a:["Washington is on the dollar bill.","Washington is on the dollar bill.（一美元纸币上是华盛顿。）"],
  w:[["Lincoln is on the dollar bill.","Lincoln is on the dollar bill.（一美元纸币上是林肯。）"],["Adams is on the dollar bill.","Adams is on the dollar bill.（一美元纸币上是亚当斯。）"],["Congress is on the dollar bill.","Congress is on the dollar bill.（一美元纸币上是国会。）"]],
  x:["Lincoln is on the $5 bill and the penny; Washington is on the $1 bill.","林肯在 5 美元和一美分上；华盛顿在 1 美元上。"],
  k:"$1 = Washington"},
 {t:"rw",
- q:["Reading test: read aloud 'What is one right in the Bill of Rights?' Which sentence answers it?","阅读测试：大声读「What is one right in the Bill of Rights?」（《权利法案》中的一项权利是什么？）哪一句是答案？"],
+ q:["Reading test: read aloud 'What is one right in the Bill of Rights?' What is the answer?","阅读测试：大声读「What is one right in the Bill of Rights?」（《权利法案》中的一项权利是什么？）答案是什么？"],
  a:["Freedom of speech is a right.","Freedom of speech is a right.（言论自由是一项权利。）"],
  w:[["Paying taxes is a right in the Bill of Rights.","Paying taxes is a right in the Bill of Rights.（交税是《权利法案》中的权利。）"],["The White House is a right.","The White House is a right.（白宫是一项权利。）"],["The dollar bill is a right.","The dollar bill is a right.（一美元纸币是一项权利。）"]],
  x:["'Freedom of speech' and 'right' are on the writing list.","freedom of speech 和 right 都在写作词汇表里。"],
  k:"freedom of speech = 言论自由"},
 {t:"rw",
- q:["Reading test: read aloud 'When is Thanksgiving?' Which sentence answers it?","阅读测试：大声读「When is Thanksgiving?」（感恩节在几月？）哪一句是答案？"],
+ q:["Reading test: read aloud 'When is Thanksgiving?' What is the answer?","阅读测试：大声读「When is Thanksgiving?」（感恩节在几月？）答案是什么？"],
  a:["Thanksgiving is in November.","Thanksgiving is in November.（感恩节在十一月。）"],
  w:[["Thanksgiving is in July.","Thanksgiving is in July.（感恩节在七月。）"],["Thanksgiving is in September.","Thanksgiving is in September.（感恩节在九月。）"],["Thanksgiving is in May.","Thanksgiving is in May.（感恩节在五月。）"]],
  x:["Thanksgiving is the fourth Thursday in November.","感恩节是十一月的第四个星期四。"],
@@ -1877,115 +1885,115 @@ CARDS.push(
 
 /* ===== ENGLISH TEST · Writing: the officer reads a sentence, you write it. Key words must be spelled right. ===== */
 {t:"rw",
- q:["Writing test: the officer reads a sentence about when Labor Day is. Which one is written correctly?","写作测试：考官念一句关于劳动节在几月的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about when Labor Day is. Write it down.","写作测试：考官念一句关于劳动节在几月的句子，你把它写下来。"],
  a:["Labor Day is in September.","Labor Day is in September."],
  w:[["Labor Day is in Setember.","Labor Day is in Setember."],["Labor Day is in Septembar.","Labor Day is in Septembar."],["Labor Day is in Sepember.","Labor Day is in Sepember."]],
  x:["You must write 1 of 3 sentences so the officer can understand it. A capital-letter or punctuation slip usually doesn't fail you, but a misspelled key word like a month can.","三句里写对一句就过。大小写、标点的小错一般不算失败，但月份这类关键词拼错可能不过。"],
  k:"Sep-tem-ber"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about when Memorial Day is. Which one is written correctly?","写作测试：考官念一句关于阵亡将士纪念日在几月的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about when Memorial Day is. Write it down.","写作测试：考官念一句关于阵亡将士纪念日在几月的句子，你把它写下来。"],
  a:["Memorial Day is in May.","Memorial Day is in May."],
  w:[["Memorail Day is in May.","Memorail Day is in May."],["Memorial Day is in Mai.","Memorial Day is in Mai."],["Memoreal Day is in May.","Memoreal Day is in May."]],
  x:["Memorial = Me-mo-ri-al. It is the last Monday in May.","Memorial 拼法：Me-mo-ri-al。在五月最后一个星期一。"],
  k:"Me-mo-ri-al · May"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about when Flag Day is. Which one is written correctly?","写作测试：考官念一句关于国旗日在几月的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about when Flag Day is. Write it down.","写作测试：考官念一句关于国旗日在几月的句子，你把它写下来。"],
  a:["Flag Day is in June.","Flag Day is in June."],
  w:[["Flag Day is in Jun.","Flag Day is in Jun."],["Flag Day is in Juny.","Flag Day is in Juny."],["Flag Day is in Jume.","Flag Day is in Jume."]],
  x:["Flag Day is June 14.","国旗日是 6 月 14 日。"],
  k:"June 有 e"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about when Independence Day is. Which one is written correctly?","写作测试：考官念一句关于独立日在几月的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about when Independence Day is. Write it down.","写作测试：考官念一句关于独立日在几月的句子，你把它写下来。"],
  a:["Independence Day is in July.","Independence Day is in July."],
  w:[["Independance Day is in July.","Independance Day is in July."],["Indipendence Day is in July.","Indipendence Day is in July."],["Independence Day is in Julie.","Independence Day is in Julie."]],
  x:["Independence ends in -ence, not -ance.","Independence 结尾是 -ence，不是 -ance。"],
  k:"In-de-pen-dence（-ence）"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about when Columbus Day is. Which one is written correctly?","写作测试：考官念一句关于哥伦布日在几月的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about when Columbus Day is. Write it down.","写作测试：考官念一句关于哥伦布日在几月的句子，你把它写下来。"],
  a:["Columbus Day is in October.","Columbus Day is in October."],
  w:[["Columbus Day is in Octobor.","Columbus Day is in Octobor."],["Colombus Day is in October.","Colombus Day is in October."],["Columbus Day is in Ocktober.","Columbus Day is in Ocktober."]],
  x:["Columbus = Co-lum-bus; October = Oc-to-ber.","Columbus：Co-lum-bus；October：Oc-to-ber。"],
  k:"Co-lum-bus · Oc-to-ber"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about when Thanksgiving is. Which one is written correctly?","写作测试：考官念一句关于感恩节在几月的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about when Thanksgiving is. Write it down.","写作测试：考官念一句关于感恩节在几月的句子，你把它写下来。"],
  a:["Thanksgiving is in November.","Thanksgiving is in November."],
  w:[["Thanksgiveing is in November.","Thanksgiveing is in November."],["Thanksgiving is in Novembor.","Thanksgiving is in Novembor."],["Thanksgving is in November.","Thanksgving is in November."]],
  x:["Thanks + giving = Thanksgiving (no extra 'e').","Thanks + giving = Thanksgiving（不加 e）。"],
  k:"Thanks + giving"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about when Presidents' Day is. Which one is written correctly?","写作测试：考官念一句关于总统日在几月的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about when Presidents' Day is. Write it down.","写作测试：考官念一句关于总统日在几月的句子，你把它写下来。"],
  a:["Presidents' Day is in February.","Presidents' Day is in February."],
  w:[["Presidents' Day is in Febuary.","Presidents' Day is in Febuary."],["Presidents' Day is in Feburary.","Presidents' Day is in Feburary."],["Prezidents' Day is in February.","Prezidents' Day is in February."]],
  x:["February has a silent-sounding 'r': Feb-ru-ary. This is the most commonly misspelled month.","February 第一个 r 常被漏掉：Feb-ru-ary。这是最容易拼错的月份。"],
  k:"Feb-RU-ary"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about the first President. Which one is written correctly?","写作测试：考官念一句关于第一任总统的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about the first President. Write it down.","写作测试：考官念一句关于第一任总统的句子，你把它写下来。"],
  a:["Washington was the first President.","Washington was the first President."],
  w:[["Washinton was the first President.","Washinton was the first President."],["Washington was the frist President.","Washington was the frist President."],["Washington was the first Presedent.","Washington was the first Presedent."]],
  x:["Washington has a 'g' before the 't': Wash-ing-ton.","Washington 在 t 前面有 g：Wash-ing-ton。"],
  k:"Wash-ING-ton · first"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about Lincoln and the Civil War. Which one is written correctly?","写作测试：考官念一句关于林肯和南北战争的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about Lincoln and the Civil War. Write it down.","写作测试：考官念一句关于林肯和南北战争的句子，你把它写下来。"],
  a:["Lincoln was President during the Civil War.","Lincoln was President during the Civil War."],
  w:[["Lincon was President during the Civil War.","Lincon was President during the Civil War."],["Lincoln was President durring the Civil War.","Lincoln was President durring the Civil War."],["Lincoln was President during the Civel War.","Lincoln was President during the Civel War."]],
  x:["Lincoln has a silent second 'l': Lin-coln.","Lincoln 第二个 l 不发音：Lin-coln。"],
  k:"Lin-coln（两个 l）"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about the largest state. Which one is written correctly?","写作测试：考官念一句关于最大的州的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about the largest state. Write it down.","写作测试：考官念一句关于最大的州的句子，你把它写下来。"],
  a:["Alaska is the largest state.","Alaska is the largest state."],
  w:[["Alaska is the largist state.","Alaska is the largist state."],["Alasca is the largest state.","Alasca is the largest state."],["Alaska is the largest stait.","Alaska is the largest stait."]],
  x:["Largest = large + st.","largest = large + st。"],
  k:"A-las-ka · lar-gest"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about the state with the most people. Which one is written correctly?","写作测试：考官念一句关于人口最多的州的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about the state with the most people. Write it down.","写作测试：考官念一句关于人口最多的州的句子，你把它写下来。"],
  a:["California has the most people.","California has the most people."],
  w:[["Califonia has the most people.","Califonia has the most people."],["California has the most peple.","California has the most peple."],["Calafornia has the most people.","Calafornia has the most people."]],
  x:["People = p-e-o-p-l-e (the 'o' is silent).","people 拼法 p-e-o-p-l-e（o 不发音）。"],
  k:"Cal-i-for-nia · pe-O-ple"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about the first state. Which one is written correctly?","写作测试：考官念一句关于第一个州的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about the first state. Write it down.","写作测试：考官念一句关于第一个州的句子，你把它写下来。"],
  a:["Delaware was the first state.","Delaware was the first state."],
  w:[["Delawere was the first state.","Delawere was the first state."],["Delaware was the furst state.","Delaware was the furst state."],["Deleware was the first state.","Deleware was the first state."]],
  x:["Delaware = Del-a-ware.","Delaware 拼法：Del-a-ware。"],
  k:"Del-a-WARE"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about where Congress meets. Which one is written correctly?","写作测试：考官念一句关于国会在哪开会的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about where Congress meets. Write it down.","写作测试：考官念一句关于国会在哪开会的句子，你把它写下来。"],
  a:["Congress meets in Washington, D.C.","Congress meets in Washington, D.C."],
  w:[["Congres meets in Washington, D.C.","Congres meets in Washington, D.C."],["Congress meats in Washington, D.C.","Congress meats in Washington, D.C."],["Congress meets in Washingtan, D.C.","Congress meets in Washingtan, D.C."]],
  x:["Meets (开会) vs meats (肉): the spelling changes the meaning.","meets（开会）和 meats（肉）拼错就变了意思。"],
  k:"Con-gress（两个 s）· meets"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about where the President lives. Which one is written correctly?","写作测试：考官念一句关于总统住在哪里的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about where the President lives. Write it down.","写作测试：考官念一句关于总统住在哪里的句子，你把它写下来。"],
  a:["The President lives in the White House.","The President lives in the White House."],
  w:[["The President lives in the Wite House.","The President lives in the Wite House."],["The President livs in the White House.","The President livs in the White House."],["The President lives in the White Hause.","The President lives in the White Hause."]],
  x:["White has a silent 'h': W-h-i-t-e.","White 里的 h 不发音：W-h-i-t-e。"],
  k:"W-H-ite House"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about who can vote. Which one is written correctly?","写作测试：考官念一句关于谁可以投票的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about who can vote. Write it down.","写作测试：考官念一句关于谁可以投票的句子，你把它写下来。"],
  a:["Citizens can vote.","Citizens can vote."],
  w:[["Sitizens can vote.","Sitizens can vote."],["Citizens can vot.","Citizens can vot."],["Citisens can vote.","Citisens can vote."]],
  x:["Citizen starts with a 'c' that sounds like 's'.","citizen 开头的 c 读作 s。"],
  k:"Cit-i-zens（c 开头）"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about the colors of the flag. Which one is written correctly?","写作测试：考官念一句关于国旗颜色的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about the colors of the flag. Write it down.","写作测试：考官念一句关于国旗颜色的句子，你把它写下来。"],
  a:["The flag is red, white, and blue.","The flag is red, white, and blue."],
  w:[["The flag is red, wite, and blue.","The flag is red, wite, and blue."],["The flag is red, white, and blu.","The flag is red, white, and blu."],["The flag is rad, white, and blue.","The flag is rad, white, and blue."]],
  x:["Blue ends in 'e'; white has an 'h'.","blue 结尾有 e；white 有 h。"],
  k:"red · white · blue"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about who lived here first. Which one is written correctly?","写作测试：考官念一句关于谁最早住在这里的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about who lived here first. Write it down.","写作测试：考官念一句关于谁最早住在这里的句子，你把它写下来。"],
  a:["American Indians lived here first.","American Indians lived here first."],
  w:[["American Indains lived here first.","American Indains lived here first."],["American Indians lived hear first.","American Indians lived hear first."],["Amercan Indians lived here first.","Amercan Indians lived here first."]],
  x:["Here (这里) vs hear (听到): a wrong word changes the meaning.","here（这里）和 hear（听到）写错就变了意思。"],
  k:"In-di-ans · here（不是 hear）"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about the country north of the United States. Which one is written correctly?","写作测试：考官念一句关于美国北边国家的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about the country north of the United States. Write it down.","写作测试：考官念一句关于美国北边国家的句子，你把它写下来。"],
  a:["Canada is north of the United States.","Canada is north of the United States."],
  w:[["Canada is noth of the United States.","Canada is noth of the United States."],["Kanada is north of the United States.","Kanada is north of the United States."],["Canada is north of the Unitid States.","Canada is north of the Unitid States."]],
  x:["Canada starts with a 'C'; north = n-o-r-t-h.","Canada 以 C 开头；north 拼法 n-o-r-t-h。"],
  k:"Can-a-da · north"},
 {t:"rw",
- q:["Writing test: the officer reads a sentence about taxes. Which one is written correctly?","写作测试：考官念一句关于交税的句子。哪一句写对了？"],
+ q:["Writing test: the officer reads a sentence about taxes. Write it down.","写作测试：考官念一句关于交税的句子，你把它写下来。"],
  a:["People pay taxes.","People pay taxes."],
  w:[["People pay taxs.","People pay taxs."],["Peple pay taxes.","Peple pay taxes."],["People pai taxes.","People pai taxes."]],
  x:["Taxes = tax + es.","taxes = tax + es。"],
@@ -2095,6 +2103,8 @@ const GLOSS = [
 const APP = {
   key: "uscit-cards-v1",
   passPct: 60,
+  oral: true,
+  oralWait: 8,
   searchHint: "搜索：amendment、参议员…",
   cheat: [
     {title: "现任官员 Current officials", note: "截至 2026 年 10 月。面试前一天到 uscis.gov/citizenship/testupdates 再确认，回答面试当天在任的人。州的答案以纽约州为例。",
@@ -2157,8 +2167,14 @@ const APP = {
 return {TOPICS:TOPICS, CARDS:CARDS, MNEMONICS:MNEMONICS, NUMBERS:NUMBERS, PAIRS:PAIRS, APP:APP, MC:(typeof MC!=='undefined'?MC:null), GLOSS:(typeof GLOSS!=='undefined'?GLOSS:[])};
 };
 EXAMS_META.cit = {n:234, key:"uscit-cards-v1"};
-var PRODUCT = {"id": "cit", "exams": ["cit"], "version": "V1", "site": "https://xvartx.github.io/passage/citizenship/", "short": "xvartx.github.io/passage/citizenship", "hubKey": "uscit-hub-v1", "brand": "通关·入籍", "titleHTML": "通关<span>入籍</span>", "docTitle": "通关·入籍 · 美国入籍考试", "chooseSub": "美国入籍考试 · 中英双语", "inSub": "通关·入籍 · 中英双语", "toast": null, "related": []};
+var PRODUCT = {"id": "cit", "exams": ["cit"], "version": "V2", "site": "https://xvartx.github.io/passage/citizenship/", "short": "xvartx.github.io/passage/citizenship", "hubKey": "uscit-hub-v1", "brand": "通关·入籍", "titleHTML": "通关<span>入籍</span>", "docTitle": "通关·入籍 · 美国入籍考试", "chooseSub": "美国入籍考试 · 中英双语", "inSub": "通关·入籍 · 中英双语", "toast": "已更新到 V2：不再是选择题，题目和答案直接显示，像真面试一样开口答", "related": []};
 var CHANGES=[
+  ["V2", "不再是选择题：直接看答案，像真面试一样开口答", [
+    "入籍考试是口试，所以去掉了 A、B、C、D 选项：学习卡片上题目和答案一起显示，还有其他也算对的答案和记忆点",
+    "看完一张点底部的「记住了」或「再练」，没记住的会进错题本、按智能复习再回来",
+    "测验和模拟面试：先看题（或听题），大声说出你的答案，再点「看答案」，自己点「我答对了」或「没答对」；模拟面试 20 题对 12 题算过",
+    "免提：用英文念题，留 8 秒让你开口回答，然后自动念出正确答案，接着下一题；不用点选项",
+    "写作题改成「考官念一句，你写下来」，看答案时对照拼写"]],
   ["V1", "第一版：美国入籍考试 · 中英双语", [
     "按 USCIS 现行 2025 版公民考试出题（2025 年 10 月 20 日及以后递交 N-400 的人考这一版）：128 道官方题全部收录，答案和官方答案表一致",
     "每道公民题都标了官方题号（#1–#128），其他也算对的答案写在解析里，州的答案以纽约州为例",
@@ -2262,6 +2278,7 @@ function topicOptions(sel){
 /* Fixed A–D order per question, like a printed exam. */
 function ansPos(id){ var h=Math.imul(id+0x9e37,0x27d4eb2d); h^=h>>>15; h=Math.imul(h,0x85ebca6b); h^=h>>>13; return (h>>>0)%4; }
 function optsFor(id){
+  if (ORAL) return [{p:CARDS[id].a, ok:true}, {p:["(not quite)","（没答对）"], ok:false}];
   var c=CARDS[id], m=(MC && MC[id]) || {}, Ans=m.s||c.a, W=m.w||c.w, pos=ansPos(id), out=[], w=0;
   for (var i=0;i<4;i++) out.push(i===pos ? {p:Ans, ok:true} : {p:W[w++], ok:false});
   return out;
@@ -2419,10 +2436,12 @@ function clean(s){ return String(s).replace(/[.。!?？]+$/,""); }
 function vlang(){ return HUB.voice || S.lang; }
 var VNAME={both:"双语", zh:"中文", en:"English"};
 function line(en, zh){ var v=vlang(); return v==="en" ? [[en,"en"]] : v==="zh" ? [[zh,"zh"]] : [[en,"en"],[zh,"zh"]]; }
+function waitS(){ return ORAL ? (A.oralWait||8) : WAIT; }
 function cardSpeech(id){
   var v=vlang(), c=CARDS[id], en=v!=="zh", zh=v!=="en", out=[];
   if (en) out.push([c.q[0],"en"]);
   if (zh) out.push([c.q[1],"zh"]);
+  if (ORAL) return out;
   optsFor(id).forEach(function(op,i){
     var k="ABCD"[i];
     if (en) out.push([k+". "+clean(op.p[0])+".","en"]);
@@ -2439,7 +2458,7 @@ function voicePicker(attr){
 
 /* ---------- hands-free: hear the question, answer with one tap (or by voice where the browser allows), hear why ---------- */
 var SR=window.SpeechRecognition||window.webkitSpeechRecognition||null;
-var HF=null, WAKE=null, MICNO=false, WAIT=12;
+var HF=null, WAKE=null, MICNO=false, WAIT=12, ORAL=false;
 /* Inside the Claude app (or any page embedded in another) the microphone is off limits, so don't even ask. */
 var EMBED=(function(){ try{ return window.self!==window.top; }catch(e){ return true; } })();
 var STANDALONE=(window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone===true;
@@ -2478,8 +2497,9 @@ function hfStart(){
   HF={phase:"read", voice:false, run:0, rec:null, t:null, tick:null, left:0, ans:null};
   document.body.classList.add("hf");
   clearAuto(); hfLock(true); renderNext();
-  if (SR && !EMBED && !MICNO) hfPrime();
-  if (!HUB.seen.hf2){ HUB.seen.hf2=1; saveHub(); toast("听完题点 A、B、C、D 作答；不答的话，"+WAIT+" 秒后自动念答案"); }
+  if (SR && !EMBED && !MICNO && !ORAL) hfPrime();
+  if (ORAL){ if (!HUB.seen.hfo){ HUB.seen.hfo=1; saveHub(); toast("听完题大声说出你的答案，"+waitS()+" 秒后自动念正确答案"); } }
+  else if (!HUB.seen.hf2){ HUB.seen.hf2=1; saveHub(); toast("听完题点 A、B、C、D 作答；不答的话，"+WAIT+" 秒后自动念答案"); }
   hfRead();
 }
 /* Ask for the microphone once, inside the tap. If the answer is no, stay silent and keep tap-to-answer. */
@@ -2518,15 +2538,15 @@ function hfRead(){
 }
 function hfWait(){
   if (!HF) return;
-  HF.phase="answer"; HF.left=WAIT; renderHF();
+  HF.phase="answer"; HF.left=waitS(); renderHF();
   var run=HF.run;
   var tk=HF.tick=setInterval(function(){
     if (!HF || run!==HF.run){ clearInterval(tk); return; }
     HF.left--;
-    var el=document.getElementById("hfT"); if (el) el.textContent="请作答 · "+Math.max(0,HF.left)+" 秒";
+    var el=document.getElementById("hfT"); if (el) el.textContent=(ORAL?"说出答案 · ":"请作答 · ")+Math.max(0,HF.left)+" 秒";
     if (HF.left<=0){ clearInterval(HF.tick); hfReveal(); }
   }, 1000);
-  if (HF.voice) hfListen();
+  if (HF.voice && !ORAL) hfListen();
 }
 function hfListen(){
   if (!HF || !SR || !HF.voice || HF.phase!=="answer") return;
@@ -2579,7 +2599,7 @@ function hfReveal(){
   S.rev=true; S.fpick=null; S.graded=null; render();
   HF.phase="show"; HF.ans=L1; renderHF();
   var run=HF.run;
-  speakNow([].concat(line("The answer is "+L1+": "+clean(c.a[0])+".","答案是 "+L1+"："+clean(c.a[1])+"。"), line(c.x[0], c.x[1]), vlang()==="en"?[]:[["记住："+c.k,"zh"]]), 0.95,
+  speakNow([].concat(ORAL ? line("The answer is: "+clean(c.a[0])+".","答案是："+clean(c.a[1])+"。") : line("The answer is "+L1+": "+clean(c.a[0])+".","答案是 "+L1+"："+clean(c.a[1])+"。"), line(c.x[0], c.x[1]), vlang()==="en"?[]:[["记住："+c.k,"zh"]]), 0.95,
     function(){ if (!HF || run!==HF.run) return; if (S.mode==="smart") S.skip[id]=1; hfNext(false); });
 }
 function hfNext(skip){
@@ -2594,12 +2614,15 @@ function renderHF(){
   if (!HF){ el.hidden=true; el.innerHTML=""; return; }
   var p=HF.phase, ic=IC.big, cls="", t="", sub="", canAnswer=(p==="read"||p==="answer");
   var how=HF.voice ? "点或说 A、B、C、D" : "点下面的 A、B、C、D";
-  if (p==="read"){ t="正在读题…"; sub="听完"+how+"作答"; }
+  if (ORAL && p==="read"){ t="正在读题…"; sub="听完大声说出你的答案"; }
+  else if (ORAL && p==="answer"){ ic=IC.dots; t="说出答案 · "+Math.max(0,HF.left)+" 秒"; sub="说完点「看答案」，或等它自动念答案"; }
+  else if (p==="read"){ t="正在读题…"; sub="听完"+how+"作答"; }
   else if (p==="answer"){ ic=HF.voice?IC.mic:IC.dots; cls=HF.voice?"listen":""; t="请作答 · "+Math.max(0,HF.left)+" 秒"; sub=how+"；不答会自动念答案"; }
   else if (p==="right"){ ic=IC.ok; cls="right"; t="答对了"; sub="马上下一题"; }
   else if (p==="wrong"){ ic=IC.no; cls="wrong"; t="不对，正确答案是 "+HF.ans; sub="听完原因和记忆点，自动下一题"; }
-  else if (p==="show"){ ic=IC.big; t="答案是 "+HF.ans; sub="听完原因，自动下一题"; }
-  var abcd='<div class="hf-abcd">'+["A","B","C","D"].map(function(x,i){ return '<button data-hfa="'+i+'"'+(canAnswer?'':' disabled')+'>'+x+'</button>'; }).join("")+'</div>';
+  else if (p==="show"){ ic=IC.big; t=ORAL?"正确答案":"答案是 "+HF.ans; sub="听完原因，自动下一题"; }
+  var abcd=ORAL ? '<div class="hf-abcd one"><button data-hf="show"'+(canAnswer?'':' disabled')+'>看答案</button></div>'
+    : '<div class="hf-abcd">'+["A","B","C","D"].map(function(x,i){ return '<button data-hfa="'+i+'"'+(canAnswer?'':' disabled')+'>'+x+'</button>'; }).join("")+'</div>';
   el.innerHTML='<div class="hf-in"><div class="hf-row"><div class="hf-ic '+cls+'">'+ic+'</div><div class="hf-tx"><b id="hfT">'+esc(t)+'</b><span>'+esc(sub)+'</span></div></div>'+
     abcd+
     '<div class="hf-lang"><span>朗读</span>'+voicePicker('data-hfv')+'</div>'+
@@ -2877,7 +2900,7 @@ function reloadFrom(d){
 function useExam(k){
   var E=exam(k); EXK=k;
   TOPICS=E.TOPICS; CARDS=E.CARDS; MNEMONICS=E.MNEMONICS; NUMBERS=E.NUMBERS; PAIRS=E.PAIRS;
-  MC=E.MC||null; GLOSS=E.GLOSS||[]; A=E.APP; KEY=A.key; IDS={};
+  MC=E.MC||null; GLOSS=E.GLOSS||[]; A=E.APP; KEY=A.key; IDS={}; ORAL=!!A.oral;
   compileGloss();
 }
 function openExam(k){
@@ -2920,7 +2943,16 @@ function resumeToast(){
 }
 
 /* ---------- LEARN ---------- */
+/* Oral exams (the citizenship test) show the answer right away: read the question, say your answer, check it. */
+function oralBody(id){
+  var c=CARDS[id];
+  return '<div class="fq">'+Lx(c.q,{g:1})+'</div><div class="ans oral">'+
+    '<div><div class="lbl">答案</div><div class="a">'+Lx(c.a,{g:1})+'</div></div>'+
+    '<div class="small">'+Lx(c.x,{g:1})+'</div>'+
+    '<div class="hook"><div class="lbl">记忆点</div><p>'+esc(c.k)+'</p></div></div></article>';
+}
 function cardBody(id){
+  if (ORAL) return oralBody(id);
   var c=CARDS[id], opts=optsFor(id), h='<div class="fq">'+Lx(c.q,{g:1,t:1})+'</div><div class="fopts">';
   opts.forEach(function(op, i){
     var cls="";
@@ -3065,7 +3097,7 @@ function vReady(){
 }
 function vQuizSetup(){
   var mc=missCount();
-  var h='<div><h2>测验</h2><p class="muted small" style="margin:4px 0 0">答错会马上告诉你正确答案、原因和记忆口诀。随时可以关掉，下次打开接着做。</p></div>'+
+  var h='<div><h2>测验</h2><p class="muted small" style="margin:4px 0 0">'+(ORAL?'像真面试一样：先看题（或听题），大声说出你的答案，再点「看答案」，自己判断对不对。':'答错会马上告诉你正确答案、原因和记忆口诀。')+'随时可以关掉，下次打开接着做。</p></div>'+
     vReady()+
     '<div class="stack"><label class="lbl" for="topicSel">主题（速练与标准）</label><select id="topicSel">'+topicOptions(S.topic)+'</select></div>'+
     '<div class="modes">'+
@@ -3084,7 +3116,17 @@ function vQuizQ(){
     (q.limit?'<span class="timer'+(left<600?' low':'')+'" id="qtimer">'+fmt(left)+'</span>':'')+'</div>'+
     '<div class="meter"><div class="bar"><i style="width:'+Math.round((mock?done:q.qi)/q.items.length*100)+'%"></i></div></div>'+
     '<div class="row" style="justify-content:space-between">'+chipOf(c)+(mock?'':spkBtn("say"))+'</div>'+
-    '<div class="fq qrow"><span class="qno">'+(q.qi+1)+'.</span><div>'+(mock?L(c.q):Lx(c.q,{g:1,t:1}))+'</div></div><div class="opts">';
+    '<div class="fq qrow"><span class="qno">'+(q.qi+1)+'.</span><div>'+(mock?L(c.q):Lx(c.q,{g:1,t:1}))+'</div></div>';
+  if (ORAL){
+    if (!answered && !it.shown){
+      h+='<button class="reveal" data-act="qshow">看答案<small>先大声说出你的答案</small></button>';
+    } else {
+      h+='<div class="ans oral"><div><div class="lbl">答案</div><div class="a">'+Lx(c.a,{g:1})+'</div></div>'+(mock?'':'<div class="small">'+Lx(c.x,{g:1})+'</div>')+'</div>';
+      if (!answered || mock) h+='<div class="grade selfgrade"><button class="btn bad'+(answered&&it.pick===1?' sel':'')+'" data-act="pick" data-o="1">没答对</button>'+
+        '<button class="btn good'+(answered&&it.pick===0?' sel':'')+'" data-act="pick" data-o="0">我答对了</button></div>';
+    }
+  } else {
+  h+='<div class="opts">';
   it.opts.forEach(function(op, i){
     var cls="";
     if (mock){ if (i===it.pick) cls=" sel"; }
@@ -3092,6 +3134,7 @@ function vQuizQ(){
     h+='<button class="opt'+cls+'" data-act="pick" data-o="'+i+'"'+(answered&&!mock?' disabled':'')+'><span class="k">'+"ABCD"[i]+'</span><span>'+L(op.p)+'</span></button>';
   });
   h+='</div>';
+  }
   if (mock){
     var lastQ=q.qi===q.items.length-1;
     h+='<div class="mocknav"><button class="btn" data-act="mprev"'+(q.qi===0?' disabled':'')+'>‹ 上一题</button>'+
@@ -3099,7 +3142,11 @@ function vQuizQ(){
     var blanks=[]; q.items.forEach(function(x,i){ if (x.pick===null && i!==q.qi) blanks.push(i); });
     if (lastQ && blanks.length) h+='<p class="small muted" style="margin:0">还有 '+blanks.length+' 题没答。<button class="linkbtn" data-act="mjump" data-q="'+blanks[0]+'">跳到第 '+(blanks[0]+1)+' 题</button></p>';
   }
-  if (answered && !mock){
+  if (answered && !mock && ORAL){
+    if (it.opts[it.pick].ok) h+='<div class="fb ok"><div class="verdict">答对了</div><div class="hook"><div class="lbl">记忆点</div><p>'+esc(c.k)+'</p></div></div>';
+    else h+='<div class="fb no"><div class="verdict">没答对，记住上面的答案</div><div class="hook big"><div class="lbl">记住这句</div><p>'+esc(c.k)+'</p></div>'+
+      '<div class="small muted">已加入错题本，连续答对 2 次自动移除。</div></div>';
+  } else if (answered && !mock){
     var ok=it.opts[it.pick].ok, last=q.qi===q.items.length-1, L1=letterOf(it.id), mine="ABCD"[it.pick];
     if (ok){
       h+='<div class="fb ok"><div class="verdict">答对了 · '+L1+'</div><div class="small">'+Lx(c.x,{g:1})+'</div>'+
@@ -3142,8 +3189,9 @@ function vQuizResult(){
     missed.forEach(function(it){
       var c=CARDS[it.id];
       h+='<div class="miss-item"><span class="chip" style="align-self:flex-start">'+esc(tname(c.t))+'</span><div><b>'+Lx(c.q,{g:1,t:1})+'</b></div>'+
-        (it.pick!==null?'<div class="small"><div class="lbl">你的答案 · '+"ABCD"[it.pick]+'</div><span class="yours">'+L(it.opts[it.pick].p)+'</span></div>':'<div class="small muted">没作答</div>')+
-        '<div><div class="lbl">正确答案 · '+letterOf(it.id)+'</div><b style="color:var(--good)">'+Lx(c.a,{g:1})+'</b></div>'+
+        (ORAL ? '<div class="small muted">'+(it.pick!==null?'你标记了「没答对」':'没作答')+'</div>' :
+         (it.pick!==null?'<div class="small"><div class="lbl">你的答案 · '+"ABCD"[it.pick]+'</div><span class="yours">'+L(it.opts[it.pick].p)+'</span></div>':'<div class="small muted">没作答</div>'))+
+        '<div><div class="lbl">正确答案'+(ORAL?'':' · '+letterOf(it.id))+'</div><b style="color:var(--good)">'+Lx(c.a,{g:1})+'</b></div>'+
         '<div class="small">'+Lx(c.x,{g:1})+'</div>'+
         '<div class="hook"><div class="lbl">记住这句</div><p>'+esc(c.k)+'</p></div></div>';
     });
@@ -3414,7 +3462,9 @@ function clearAuto(){ if (AUTO_T){ clearTimeout(AUTO_T); AUTO_T=null; } }
 function nextBarHTML(){
   if (HOME || !HUB.ex || HF) return "";
   if (S.tab==="cards"){
-    if (curId()===null || !S.rev) return "";
+    if (curId()===null) return "";
+    if (ORAL) return '<div class="grade"><button class="btn bad" data-act="again">再练<small>加入错题本</small></button><button class="btn good" data-act="got">记住了<small>标记掌握</small></button></div>';
+    if (!S.rev) return "";
     if (S.fpick!==null) return '<button class="btn primary'+(AUTO_T?' auto':'')+'" data-act="adv"><span>下一张 ›</span>'+autoFill()+'</button>';
     return '<div class="grade"><button class="btn bad" data-act="again">再练<small>加入错题本</small></button><button class="btn good" data-act="got">记住了<small>标记掌握</small></button></div>';
   }
@@ -3503,6 +3553,7 @@ function act(a, d){
         else ans=true;
       } else if (!S.quiz.items[S.quiz.qi].opts[S.quiz.items[S.quiz.qi].pick].ok) ans=true;
       break;
+    case "qshow": if (S.quiz && !S.quiz.done){ S.quiz.items[S.quiz.qi].shown=true; ans=true; } break;
     case "qnext": S.quiz.qi++; if (S.quiz.qi>=S.quiz.items.length){ S.quiz.qi=S.quiz.items.length-1; finishQuiz(); } save(); top=true; hush(); break;
     case "submit": finishQuiz(); top=true; break;
     case "mprev": S.quiz.qi=Math.max(0,S.quiz.qi-1); save(); top=true; break;
@@ -3593,6 +3644,7 @@ document.getElementById("hfbar").addEventListener("click", function(e){
   var k=b.dataset.hf;
   if (k==="stop"){ hfStop(); render(); return; }
   if (k==="repeat"){ hfRead(); return; }
+  if (k==="show"){ hfReveal(); return; }
   if (k==="skip"){ hfHalt(); hfNext(true); return; }
 });
 document.addEventListener("click", function(e){
@@ -3613,6 +3665,7 @@ document.addEventListener("keydown", function(e){
   if (HOME || !HUB.ex) return;
   if (idx<0 && k.length===1 && "1234".indexOf(k)>=0) idx=+k-1;
   if (S.tab==="cards"){
+    if (ORAL){ if ((k==="enter"||k===" ") && curId()!==null && !HF){ e.preventDefault(); act("got",{}); } return; }
     if (idx>=0 && !S.rev && curId()!==null){ e.preventDefault(); act("fpick",{o:idx}); return; }
     if (k==="enter" || k===" "){
       if (curId()===null || HF) return;
